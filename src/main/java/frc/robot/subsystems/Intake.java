@@ -119,6 +119,15 @@ private boolean m_shooterIRWasPreviouslyTriggered;
   });
   }
 
+  public CommandBase runTiltMotorCommandUntil(double power) {
+    // Inline construction of command goes here.
+    // Subsystem::RunOnce implicitly requires `this` subsystem.
+
+    return runTiltMotorCommand(power).withTimeout(1.0);
+  }
+
+
+
   public CommandBase runShootMotorCommandwithPID(double targetValue, ControlType controlType) {
     // Inline construction of command goes here.
     // Subsystem::RunOnce implicitly requires `this` subsystem.

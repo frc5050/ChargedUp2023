@@ -6,13 +6,16 @@ package frc.robot.subsystems;
 
 import java.util.function.DoubleSupplier;
 
+import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -22,6 +25,7 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.PIDController2;
 
 public class Drive extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
@@ -32,8 +36,10 @@ public class Drive extends SubsystemBase {
   CANSparkMax m_rightRear = new CANSparkMax(7, MotorType.kBrushless);
   SparkMaxPIDController m_rightPID;
   SparkMaxPIDController m_leftPID;
+  PIDController2 m_turnPID;
   RelativeEncoder m_leftEncoder;
   RelativeEncoder m_rightEncoder;
+  AHRS m_navX = new AHRS();
 
   private final MotorControllerGroup m_leftMotors = 
     new MotorControllerGroup( 
@@ -67,7 +73,9 @@ public class Drive extends SubsystemBase {
     m_rightEncoder.setPosition(0);
     m_leftEncoder.setPosition(0);
 
-    m_rightMotors.setInverted(true);
+    m_rightFront.setInverted(true);
+    m_rightRear.setInverted(true);
+    m_rightMotors.setInverted(false);
     m_leftMotors.setInverted(false);
 
     m_leftFront.enableVoltageCompensation(12.0);
@@ -77,10 +85,17 @@ public class Drive extends SubsystemBase {
 
     m_rightPID = m_rightFront.getPIDController();
     m_leftPID = m_leftFront.getPIDController();
+    m_turnPID = new PIDController2(0.02, 0, 0.0001);
+    m_turnPID.enableContinuousInput(-180, 180);
     
+    m_turnPID.setTolerance(2.0, 1.0);
 
     m_leftEncoder.setPositionConversionFactor(Constants.kMotorRotationsPerWheelRotations);
     m_rightEncoder.setPositionConversionFactor(Constants.kMotorRotationsPerWheelRotations);
+  }
+
+  public void resetNavX(){
+    m_navX.reset();
   }
 
 
@@ -162,5 +177,38 @@ public class Drive extends SubsystemBase {
         // Stop the drive when the command ends
         .finallyDo(interrupted -> m_drive.stopMotor());
   }
+
+  public CommandBase turnToAngleCommand (double angleDegrees) {
+    return runOnce(
+              () -> {
+                System.out.println("Setting setpoint");
+                m_turnPID.reset();
+                m_turnPID.setSetpoint(angleDegrees);
+              }
+    ).beforeStarting(
+      run(
+          () -> {
+            m_turnPID.setSetpoint(angleDegrees);
+            // System.out.println("Doing PID things");
+            System.out.println(-m_navX.getAngle());
+            double beginningAngle = -m_navX.getAngle();
+            double angleCommand = MathUtil.clamp(m_turnPID.calculate(beginningAngle), -0.2, 0.2);
+            
+            double leftPower = -angleCommand;
+            double rightPower = angleCommand;
+            m_drive.tankDrive(leftPower, rightPower, false);
+  
+            System.out.println(m_turnPID.atSetpoint());
+            // System.out.println(m_turnPID.getPositionError());
+            // System.out.println(m_turnPID.getVelocityError());
+            
+          }).until(()->m_turnPID.atSetpoint()));
+    
+    
+    
+  }
+
+
+
 }
 

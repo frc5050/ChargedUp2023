@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants;
 import frc.robot.autos.DriveAuto;
+import frc.robot.autos.PickUpCube;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.ZeroIntake;
 import frc.robot.subsystems.Drive;
@@ -127,6 +128,10 @@ public class RobotContainer {
     //   m_driverController.leftStick().whileTrue(m_lifter.runConeExtendMotorCommand(0.3));
     //   m_driverController.leftStick().whileFalse(m_lifter.runConeExtendMotorCommand(0.0));
 
+    m_joystick.button(12).whileTrue(m_drive.turnToAngleCommand(90));
+    m_joystick.button(12).whileFalse(m_drive.getDefaultCommand());
+
+
   }
 
   /**
@@ -139,6 +144,6 @@ public class RobotContainer {
    //sendable chooser goes here to implement multiple autons 
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return DriveAuto.autoDriveCommand(m_drive, m_intake);
+    return PickUpCube.autoTurnCommand(m_drive, m_intake);
   }
 }
