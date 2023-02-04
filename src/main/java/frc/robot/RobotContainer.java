@@ -139,6 +139,6 @@ public class RobotContainer {
    //sendable chooser goes here to implement multiple autons 
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return DriveAuto.autoDriveCommand(m_drive);
+    return DriveAuto.autoDriveCommand(m_drive, m_intake);
   }
 }

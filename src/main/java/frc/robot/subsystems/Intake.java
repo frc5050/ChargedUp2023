@@ -29,6 +29,7 @@ public class Intake extends SubsystemBase {
   public Solenoid m_Solenoid = new Solenoid(PneumaticsModuleType.CTREPCM, 5);
   private RelativeEncoder m_tiltEncoder;
   private Timer m_intakeTimer;
+  private Timer m_autonTimer;
   private RelativeEncoder m_shootEncoder; 
   private SparkMaxPIDController m_tiltPID;
   private SparkMaxPIDController m_shootPID;
@@ -51,6 +52,7 @@ private boolean m_shooterIRWasPreviouslyTriggered;
     m_shootPID.setIZone(200);
     m_shootPID.setD(0);
     m_intakeTimer = new Timer();
+    m_autonTimer = new Timer();
     m_shooterIRWasPreviouslyTriggered = false;
     setSoftLimits();
     //m_shootPID.setFF(1 / 5400);
@@ -78,6 +80,10 @@ private boolean m_shooterIRWasPreviouslyTriggered;
         () -> {
           /* one-time action goes here */
         });
+  }
+
+  public void resetIntakeTimer(){
+    m_intakeTimer.reset();
   }
 
   public CommandBase shootPopCommand(boolean solenoidState) {
@@ -122,6 +128,27 @@ private boolean m_shooterIRWasPreviouslyTriggered;
         );
   }
 
+  public CommandBase runShootMotorCommandUntil(double power) {
+    // Inline construction of command goes here.
+    // Subsystem::RunOnce implicitly requires `this` subsystem.
+
+    return runOnce(
+            () -> { m_autonTimer.reset();
+                    m_autonTimer.start();
+
+            }
+    ).beforeStarting
+    (   run(
+        () -> {
+          if (shooterIRisTriggered() && power > 0 && m_intakeTimer.hasElapsed(0.05)){
+            m_shootMotor.set(0);
+          }else{
+          m_shootMotor.set(power);
+          }}))
+          .withTimeout(1)
+          .finallyDo((interrupted) -> m_shootMotor.set(0));
+  }
+
   public boolean shooterIRisTriggered(){
     return !m_shooterIR.get();
   }
@@ -140,6 +167,8 @@ private boolean m_shooterIRWasPreviouslyTriggered;
         }); 
   }
 
+
+  
 
 
   /**

@@ -8,8 +8,10 @@ import java.util.function.DoubleSupplier;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -28,6 +30,8 @@ public class Drive extends SubsystemBase {
   CANSparkMax m_leftRear =  new CANSparkMax(6, MotorType.kBrushless);
   CANSparkMax m_rightFront = new CANSparkMax(5, MotorType.kBrushless);
   CANSparkMax m_rightRear = new CANSparkMax(7, MotorType.kBrushless);
+  SparkMaxPIDController m_rightPID;
+  SparkMaxPIDController m_leftPID;
   RelativeEncoder m_leftEncoder;
   RelativeEncoder m_rightEncoder;
 
@@ -60,6 +64,9 @@ public class Drive extends SubsystemBase {
     m_rightRear.follow(m_rightFront);
     m_leftRear.follow(m_leftFront);
 
+    m_rightEncoder.setPosition(0);
+    m_leftEncoder.setPosition(0);
+
     m_rightMotors.setInverted(true);
     m_leftMotors.setInverted(false);
 
@@ -68,15 +75,22 @@ public class Drive extends SubsystemBase {
     m_rightFront.enableVoltageCompensation(12.0);
     m_rightRear.enableVoltageCompensation(12.0);
 
+    m_rightPID = m_rightFront.getPIDController();
+    m_leftPID = m_leftFront.getPIDController();
+    
+
     m_leftEncoder.setPositionConversionFactor(Constants.kMotorRotationsPerWheelRotations);
     m_rightEncoder.setPositionConversionFactor(Constants.kMotorRotationsPerWheelRotations);
   }
+
 
   /**
    * Example command factory method.
    *
    * @return a command
    */
+
+   
   public CommandBase exampleMethodCommand() {
     // Inline construction of command goes here.
     // Subsystem::RunOnce implicitly requires `this` subsystem.
@@ -98,7 +112,7 @@ public class Drive extends SubsystemBase {
     // Inline construction of command goes here.
     // Subsystem::RunOnce implicitly requires `this` subsystem.
     return run(
-        () -> m_drive.arcadeDrive(fwd.getAsDouble(), rot.getAsDouble())         
+        () -> m_drive.arcadeDrive(fwd.getAsDouble(), rot.getAsDouble(), true)         
         );
   }
 
@@ -129,71 +143,17 @@ public class Drive extends SubsystemBase {
     // This method will be called once per scheduler run during simulation
   }
 
-
-  public void driveStraight(double power){
-     double offset = 0.05;
-     double leftPower = power;
-     double rightPower = power; 
-     double prevLeftCount = 0;
-     double prevRightCount= 0;
-
-     double leftCount = m_leftEncoder.getPosition();
-     double rightCount = m_rightEncoder.getPosition();
-
-     double leftDiff = leftCount - prevLeftCount;
-     double rightDiff = rightCount - prevRightCount;
-
-      prevLeftCount = leftCount;
-      prevRightCount = rightCount;
-
-     if (leftDiff > rightDiff){
-      leftPower = leftPower - offset;
-      rightPower = rightPower + offset;
-     }else if (leftDiff < rightDiff){
-      leftPower = leftPower + offset;
-      rightPower = rightPower - offset;
-     }
-
-     m_leftFront.set(leftPower);
-     m_rightFront.set(rightPower);
-     m_leftRear.set(leftPower);
-    m_rightRear.set(rightPower);
-
-  }
-
-
-  public CommandBase driveDistanceCommandWithStraightControl(double distanceMeters, double speed) {
+  public CommandBase driveDistanceCommand(double distanceMeters, double speed, double rotation) {
     return runOnce(
             () -> {
               // Reset encoders at the start of the command
               m_leftEncoder.setPosition(0.0);
               m_rightEncoder.setPosition(0.0);
               
-            })
-        // Drive forward at specified speed
-        .andThen(run(() -> driveStraight(speed))
-        )
-        // End command when we've traveled the specified distance
-        .until(
-            () ->
-                Math.max(m_leftEncoder.getPosition(), m_rightEncoder.getPosition())
-                    >= distanceMeters * Constants.kMetersToWheelRotations)
-        // Stop the drive when the command ends
-        .finallyDo(interrupted -> m_drive.stopMotor());
-  }
-
-
-
-  public CommandBase driveDistanceCommand(double distanceMeters, double speed) {
-    return runOnce(
-            () -> {
-              // Reset encoders at the start of the command
-              m_leftEncoder.setPosition(0.0);
-              m_rightEncoder.setPosition(0.0);
               
             })
         // Drive forward at specified speed
-        .andThen(run(() -> m_drive.arcadeDrive(speed, 0)))
+        .andThen(run(() -> m_drive.arcadeDrive(speed, rotation)))
         // End command when we've traveled the specified distance
         .until(
             () ->
