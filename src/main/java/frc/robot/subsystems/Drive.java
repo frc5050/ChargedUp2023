@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class Drive extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
@@ -56,6 +57,9 @@ public class Drive extends SubsystemBase {
     m_leftEncoder = m_leftFront.getEncoder();
     m_rightEncoder = m_rightFront.getEncoder();
 
+    m_rightRear.follow(m_rightFront);
+    m_leftRear.follow(m_leftFront);
+
     m_rightMotors.setInverted(true);
     m_leftMotors.setInverted(false);
 
@@ -63,6 +67,9 @@ public class Drive extends SubsystemBase {
     m_leftRear.enableVoltageCompensation(12.0);
     m_rightFront.enableVoltageCompensation(12.0);
     m_rightRear.enableVoltageCompensation(12.0);
+
+    m_leftEncoder.setPositionConversionFactor(Constants.kMotorRotationsPerWheelRotations);
+    m_rightEncoder.setPositionConversionFactor(Constants.kMotorRotationsPerWheelRotations);
   }
 
   /**
@@ -123,6 +130,60 @@ public class Drive extends SubsystemBase {
   }
 
 
+  public void driveStraight(double power){
+     double offset = 0.05;
+     double leftPower = power;
+     double rightPower = power; 
+     double prevLeftCount = 0;
+     double prevRightCount= 0;
+
+     double leftCount = m_leftEncoder.getPosition();
+     double rightCount = m_rightEncoder.getPosition();
+
+     double leftDiff = leftCount - prevLeftCount;
+     double rightDiff = rightCount - prevRightCount;
+
+      prevLeftCount = leftCount;
+      prevRightCount = rightCount;
+
+     if (leftDiff > rightDiff){
+      leftPower = leftPower - offset;
+      rightPower = rightPower + offset;
+     }else if (leftDiff < rightDiff){
+      leftPower = leftPower + offset;
+      rightPower = rightPower - offset;
+     }
+
+     m_leftFront.set(leftPower);
+     m_rightFront.set(rightPower);
+     m_leftRear.set(leftPower);
+    m_rightRear.set(rightPower);
+
+  }
+
+
+  public CommandBase driveDistanceCommandWithStraightControl(double distanceMeters, double speed) {
+    return runOnce(
+            () -> {
+              // Reset encoders at the start of the command
+              m_leftEncoder.setPosition(0.0);
+              m_rightEncoder.setPosition(0.0);
+              
+            })
+        // Drive forward at specified speed
+        .andThen(run(() -> driveStraight(speed))
+        )
+        // End command when we've traveled the specified distance
+        .until(
+            () ->
+                Math.max(m_leftEncoder.getPosition(), m_rightEncoder.getPosition())
+                    >= distanceMeters * Constants.kMetersToWheelRotations)
+        // Stop the drive when the command ends
+        .finallyDo(interrupted -> m_drive.stopMotor());
+  }
+
+
+
   public CommandBase driveDistanceCommand(double distanceMeters, double speed) {
     return runOnce(
             () -> {
@@ -137,7 +198,7 @@ public class Drive extends SubsystemBase {
         .until(
             () ->
                 Math.max(m_leftEncoder.getPosition(), m_rightEncoder.getPosition())
-                    >= distanceMeters)
+                    >= distanceMeters * Constants.kMetersToWheelRotations)
         // Stop the drive when the command ends
         .finallyDo(interrupted -> m_drive.stopMotor());
   }

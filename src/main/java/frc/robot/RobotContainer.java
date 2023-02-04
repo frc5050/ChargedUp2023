@@ -4,15 +4,14 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
+import frc.robot.Constants;
+import frc.robot.autos.DriveAuto;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.ZeroIntake;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lifter;
-
 import com.revrobotics.CANSparkMax.ControlType;
 
 import edu.wpi.first.wpilibj.Solenoid;
@@ -33,6 +32,7 @@ public class RobotContainer {
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   public Drive m_drive = new Drive();
   public Intake m_intake = new Intake();
+  public static DriveAuto m_autos = new DriveAuto();
  // public Lifter m_lifter = new Lifter();
 
   CommandJoystick m_joystick = new CommandJoystick(1);
@@ -45,7 +45,7 @@ public class RobotContainer {
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+      new CommandXboxController(Constants.kDriverControllerPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -139,6 +139,6 @@ public class RobotContainer {
    //sendable chooser goes here to implement multiple autons 
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return new ZeroIntake(m_intake);
+    return DriveAuto.autoDriveCommand(m_drive);
   }
 }
