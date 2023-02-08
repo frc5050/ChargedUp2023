@@ -36,7 +36,8 @@ public class Drive extends SubsystemBase {
   CANSparkMax m_rightRear = new CANSparkMax(7, MotorType.kBrushless);
   SparkMaxPIDController m_rightPID;
   SparkMaxPIDController m_leftPID;
-  PIDController2 m_turnPID;
+  PIDController m_turnPID;
+  PIDController m_tiltPID;
   RelativeEncoder m_leftEncoder;
   RelativeEncoder m_rightEncoder;
   AHRS m_navX = new AHRS();
@@ -85,10 +86,13 @@ public class Drive extends SubsystemBase {
 
     m_rightPID = m_rightFront.getPIDController();
     m_leftPID = m_leftFront.getPIDController();
-    m_turnPID = new PIDController2(0.02, 0, 0.0001);
+    m_turnPID = new PIDController(0.02, 0, 0.0001);
     m_turnPID.enableContinuousInput(-180, 180);
     
     m_turnPID.setTolerance(2.0, 1.0);
+
+    m_tiltPID = new PIDController(0.08, 0, 0);
+    m_tiltPID.setTolerance(5);
 
     m_leftEncoder.setPositionConversionFactor(Constants.kMotorRotationsPerWheelRotations);
     m_rightEncoder.setPositionConversionFactor(Constants.kMotorRotationsPerWheelRotations);
@@ -105,6 +109,9 @@ public class Drive extends SubsystemBase {
    * @return a command
    */
 
+   public void controlBrake(boolean solenoidState){
+    m_brakeSolenoid.set(solenoidState);
+   }
    
   public CommandBase exampleMethodCommand() {
     // Inline construction of command goes here.
@@ -114,6 +121,28 @@ public class Drive extends SubsystemBase {
           /* one-time action goes here */
         });
   }
+
+  public CommandBase balanceRollCommand(double setPoint) {
+    // Inline construction of command goes here.
+    // Subsystem::RunOnce implicitly requires `this` subsystem.
+    return run(
+        () -> {
+          m_tiltPID.setSetpoint(setPoint);
+          double beginningRoll = m_navX.getRoll();
+          double motorCommand =  MathUtil.clamp(m_tiltPID.calculate(beginningRoll), -0.25, 0.25);
+          double leftPower = motorCommand;
+          double rightPower = motorCommand; 
+          m_drive.tankDrive(rightPower,leftPower);
+          System.out.println(motorCommand);
+     
+        });
+  }
+
+  public void setMotorPower(double speed){
+    m_leftMotors.set(speed);
+    m_rightMotors.set(speed);
+  }
+
 
   public CommandBase controlBrakeCommand(boolean solenoidState) {
     // Inline construction of command goes here.

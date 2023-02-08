@@ -131,6 +131,8 @@ public class RobotContainer {
     m_joystick.button(12).whileTrue(m_drive.turnToAngleCommand(90));
     m_joystick.button(12).whileFalse(m_drive.getDefaultCommand());
 
+    m_joystick.button(9).whileTrue(m_drive.balanceRollCommand(0.0));
+    m_joystick.button(9).whileFalse(m_drive.getDefaultCommand());
 
   }
 
