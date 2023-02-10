@@ -206,7 +206,8 @@ public class Drive extends SubsystemBase {
               // Reset encoders at the start of the command
               m_leftEncoder.setPosition(0.0);
               m_rightEncoder.setPosition(0.0);
-              
+              //double lPosition = m_leftEncoder.getPosition();
+              //double rPosition = m_rightEncoder.getPosition();
               
             })
         // Drive forward at specified speed
@@ -214,8 +215,10 @@ public class Drive extends SubsystemBase {
         // End command when we've traveled the specified distance
         .until(
             () ->
-                Math.max(m_leftEncoder.getPosition(), m_rightEncoder.getPosition())
-                    >= distanceMeters * Constants.kMetersToWheelRotations)
+                Math.max(Math.abs(m_leftEncoder.getPosition()), Math.abs(m_rightEncoder.getPosition()))
+                    >= Math.abs(distanceMeters * Constants.kMetersToWheelRotations) 
+                    && (m_leftEncoder.getPosition() >= 0.0 && m_rightEncoder.getPosition() >= 0.0 && distanceMeters >= 0.0) 
+                    || (m_leftEncoder.getPosition() <= 0.0 && m_rightEncoder.getPosition() <= 0.0 && distanceMeters <= 0.0)) 
         // Stop the drive when the command ends
         .finallyDo(interrupted -> m_drive.stopMotor());
   }
