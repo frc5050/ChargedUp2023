@@ -7,6 +7,8 @@ package frc.robot;
 import frc.robot.Constants;
 import frc.robot.autos.DriveAuto;
 import frc.robot.autos.PickUpCube;
+import frc.robot.autos.SideStartRetrieveAndPark;
+import frc.robot.autos.zeroTest;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.ZeroIntake;
 import frc.robot.subsystems.Drive;
@@ -78,8 +80,10 @@ public class RobotContainer {
             m_drive.arcadeDriveCommand(
           () -> -m_joystick.getY(), () -> -m_joystick.getX()) );  
 
-    m_joystick.button(8).whileTrue(m_drive.controlBrakeCommand(true));
-    m_joystick.button(8).whileFalse(m_drive.controlBrakeCommand(false));
+    m_intake.setDefaultCommand(m_intake.tiltDoNothingCommand());
+
+    m_joystick.button(8).whileTrue(m_drive.controlBrakeCommand(false));
+    m_joystick.button(8).whileFalse(m_drive.controlBrakeCommand(true));
 
     //tilt 
     m_driverController.povUp().whileTrue(m_intake.runTiltMotorCommand(-0.3));
@@ -134,6 +138,9 @@ public class RobotContainer {
     m_joystick.button(9).whileTrue(m_drive.balanceRollCommand(0.0));
     m_joystick.button(9).whileFalse(m_drive.getDefaultCommand());
 
+    m_joystick.button(11).whileTrue(m_intake.zeroTiltMotorCommand());
+    m_joystick.button(11).whileFalse(m_intake.getDefaultCommand());
+
   }
 
   /**
@@ -146,6 +153,6 @@ public class RobotContainer {
    //sendable chooser goes here to implement multiple autons 
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return PickUpCube.autoTurnCommand(m_drive, m_intake);
+    return SideStartRetrieveAndPark.sideStartRetrieveAndParkCommand(m_drive, m_intake);
   }
 }

@@ -52,7 +52,6 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
-    System.out.println("running");
     m_robotContainer.m_drive.controlBrake(true);
 
   }

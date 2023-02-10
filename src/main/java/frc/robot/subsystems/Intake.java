@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.commands.ZeroIntake;
 
 public class Intake extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
@@ -54,7 +55,6 @@ private boolean m_shooterIRWasPreviouslyTriggered;
     m_intakeTimer = new Timer();
     m_autonTimer = new Timer();
     m_shooterIRWasPreviouslyTriggered = false;
-    setSoftLimits();
     //m_shootPID.setFF(1 / 5400);
 
 
@@ -65,7 +65,11 @@ private boolean m_shooterIRWasPreviouslyTriggered;
     m_tiltMotor.setSoftLimit(SoftLimitDirection.kReverse, 1);
     m_tiltMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
 
+  }
 
+
+  public double getTiltSoftLimit(){
+    return m_tiltMotor.getSoftLimit(SoftLimitDirection.kReverse);
   }
 
   /**
@@ -81,6 +85,32 @@ private boolean m_shooterIRWasPreviouslyTriggered;
           /* one-time action goes here */
         });
   }
+
+
+  
+  public CommandBase tiltDoNothingCommand() {
+    // Inline construction of command goes here.
+    // Subsystem::RunOnce implicitly requires `this` subsystem.
+    return run(
+        () -> {
+          m_tiltMotor.set(0);
+        });
+  }
+
+
+  public CommandBase zeroTiltMotorEncoderCommand() {
+    // Inline construction of command goes here.
+    // Subsystem::RunOnce implicitly requires `this` subsystem.
+    return runOnce(
+        () -> {
+          m_tiltEncoder.setPosition(0.0);
+        });
+  }
+
+  public CommandBase zeroTiltMotorCommand(){
+    return new ZeroIntake(this);
+  }
+
 
   public void resetIntakeTimer(){
     m_intakeTimer.reset();
@@ -107,6 +137,10 @@ private boolean m_shooterIRWasPreviouslyTriggered;
 
   public void zeroTiltMotor(){
     m_tiltEncoder.setPosition(0.0);
+  }
+
+  public double getTiltMotorPosition(){
+    return m_tiltEncoder.getPosition();
   }
 
   public CommandBase runTiltMotorCommand(double power) {

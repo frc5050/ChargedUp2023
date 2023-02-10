@@ -122,6 +122,17 @@ public class Drive extends SubsystemBase {
         });
   }
 
+
+  public CommandBase zeroDriveEncoderCommand( ) {
+    // Inline construction of command goes here.
+    // Subsystem::RunOnce implicitly requires `this` subsystem.
+    return runOnce(
+        () -> {
+          m_rightEncoder.setPosition(0);
+          m_leftEncoder.setPosition(0);
+        });
+  }
+
   public CommandBase balanceRollCommand(double setPoint) {
     // Inline construction of command goes here.
     // Subsystem::RunOnce implicitly requires `this` subsystem.
@@ -133,7 +144,6 @@ public class Drive extends SubsystemBase {
           double leftPower = motorCommand;
           double rightPower = motorCommand; 
           m_drive.tankDrive(rightPower,leftPower);
-          System.out.println(motorCommand);
      
         });
   }
@@ -142,6 +152,9 @@ public class Drive extends SubsystemBase {
     m_leftMotors.set(speed);
     m_rightMotors.set(speed);
   }
+
+
+
 
 
   public CommandBase controlBrakeCommand(boolean solenoidState) {
@@ -210,7 +223,7 @@ public class Drive extends SubsystemBase {
   public CommandBase turnToAngleCommand (double angleDegrees) {
     return runOnce(
               () -> {
-                System.out.println("Setting setpoint");
+
                 m_turnPID.reset();
                 m_turnPID.setSetpoint(angleDegrees);
               }
@@ -218,8 +231,6 @@ public class Drive extends SubsystemBase {
       run(
           () -> {
             m_turnPID.setSetpoint(angleDegrees);
-            // System.out.println("Doing PID things");
-            System.out.println(-m_navX.getAngle());
             double beginningAngle = -m_navX.getAngle();
             double angleCommand = MathUtil.clamp(m_turnPID.calculate(beginningAngle), -0.2, 0.2);
             
@@ -227,9 +238,6 @@ public class Drive extends SubsystemBase {
             double rightPower = angleCommand;
             m_drive.tankDrive(leftPower, rightPower, false);
   
-            System.out.println(m_turnPID.atSetpoint());
-            // System.out.println(m_turnPID.getPositionError());
-            // System.out.println(m_turnPID.getVelocityError());
             
           }).until(()->m_turnPID.atSetpoint()));
     

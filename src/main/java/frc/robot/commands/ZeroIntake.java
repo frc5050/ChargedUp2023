@@ -55,12 +55,20 @@ public class ZeroIntake extends CommandBase {
   @Override
   public void end(boolean interrupted) {
       m_intake.setTiltMotorPower(0.0);
-      m_intake.zeroTiltMotor();
+      System.out.println(interrupted);
+      if (!interrupted){
+        m_intake.zeroTiltMotor();
+        m_intake.setSoftLimits();
+        System.out.println("tilt motor position: " + m_intake.getTiltMotorPosition());
+        System.out.println("tilt motor soft limit: " + m_intake.getTiltSoftLimit());
+
+      }
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+
     return m_timer.hasElapsed(0.4);
   }
 }
