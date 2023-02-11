@@ -122,12 +122,10 @@ private boolean m_shooterIRWasPreviouslyTriggered;
     return runOnce(
         () -> {
          m_Solenoid.set(solenoidState);
-         System.out.println(solenoidState);
   });
   }
 
   public boolean isRunningSlowly(){
-    System.out.println(m_tiltEncoder.getVelocity());
     return Math.abs(m_tiltEncoder.getVelocity()) < 1;
   }
 
@@ -149,7 +147,6 @@ private boolean m_shooterIRWasPreviouslyTriggered;
     return run(
         () -> {
           setTiltMotorPower(power);
-              System.out.println(m_tiltEncoder.getPosition());
   });
   }
 

@@ -13,13 +13,13 @@ public class SideStartRetrieveAndPark extends CommandBase {
         return Commands.sequence(intake.zeroTiltMotorCommand(),  
             drive.zeroDriveEncoderCommand(),
             drive.controlBrakeCommand(true),
-            intake.runShootMotorCommandUntil(1.0), 
-            drive.driveDistanceCommand(-1, 0.3, -0.1), 
+            intake.runShootMotorCommandUntil(-1.0), 
+            drive.driveDistanceCommand(-1, -0.3, -0.1), 
             drive.turnToAngleCommand(180), 
             intake.runTiltMotorCommandUntil(0.3), 
             intake.runShootMotorCommandUntil(0.5),
+            drive.driveDistanceCommand(1, 0.3, 0.1),
             drive.turnToAngleCommand(135),
-            drive.driveDistanceCommand(-1, 0.3, -0.1),
             drive.balanceRollCommand(0));
       }
 

@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import java.util.function.DoubleSupplier;
 
+import com.fasterxml.jackson.databind.deser.std.ContainerDeserializerBase;
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -40,6 +41,10 @@ public class Drive extends SubsystemBase {
   PIDController m_tiltPID;
   RelativeEncoder m_leftEncoder;
   RelativeEncoder m_rightEncoder;
+  double adjustedDistanceMeters;
+  double lStartingPosition; 
+  double desiredChange;
+  double currentChange;
   AHRS m_navX = new AHRS();
 
   private final MotorControllerGroup m_leftMotors = 
@@ -200,33 +205,50 @@ public class Drive extends SubsystemBase {
     // This method will be called once per scheduler run during simulation
   }
 
+  //This command takes distance but it also Math.abs's it so the sign of speed determines the direction rather than distance meters
   public CommandBase driveDistanceCommand(double distanceMeters, double speed, double rotation) {
     return runOnce(
             () -> {
-              // Reset encoders at the start of the command
-              m_leftEncoder.setPosition(0.0);
-              m_rightEncoder.setPosition(0.0);
-              //double lPosition = m_leftEncoder.getPosition();
-              //double rPosition = m_rightEncoder.getPosition();
+              System.out.println("starting drive distance command");
+              lStartingPosition = m_leftEncoder.getPosition() / Constants.kMetersToWheelRotations;
+              adjustedDistanceMeters = lStartingPosition + distanceMeters;
+              desiredChange = distanceMeters;
+              currentChange = 0;
+            }
+    ).andThen(
+    
+    run(()  -> {
+
+    double currentPosition =   m_leftEncoder.getPosition() / Constants.kMetersToWheelRotations;
+
+            System.out.println("left position: " + lStartingPosition);
               
-            })
-        // Drive forward at specified speed
-        .andThen(run(() -> m_drive.arcadeDrive(speed, rotation)))
+              System.out.println("desired change: " + desiredChange);
+              System.out.println("current change: " + currentChange);
+              currentChange = currentPosition - lStartingPosition;
+
+
+                m_drive.arcadeDrive(speed, rotation);
+  })
         // End command when we've traveled the specified distance
         .until(
             () ->
-                Math.max(Math.abs(m_leftEncoder.getPosition()), Math.abs(m_rightEncoder.getPosition()))
-                    >= Math.abs(distanceMeters * Constants.kMetersToWheelRotations) 
-                    && (m_leftEncoder.getPosition() >= 0.0 && m_rightEncoder.getPosition() >= 0.0 && distanceMeters >= 0.0) 
-                    || (m_leftEncoder.getPosition() <= 0.0 && m_rightEncoder.getPosition() <= 0.0 && distanceMeters <= 0.0)) 
+            (currentChange / desiredChange) >= 1)
         // Stop the drive when the command ends
-        .finallyDo(interrupted -> m_drive.stopMotor());
+        .finallyDo(interrupted -> {
+               m_drive.stopMotor();
+               System.out.println("interrupted: " + interrupted);
+               System.out.println("motor power" + m_leftMotors.get());   })
+
+        
+  );
+
   }
 
   public CommandBase turnToAngleCommand (double angleDegrees) {
     return runOnce(
               () -> {
-
+                System.out.println("starting turn to angle command");
                 m_turnPID.reset();
                 m_turnPID.setSetpoint(angleDegrees);
               }
