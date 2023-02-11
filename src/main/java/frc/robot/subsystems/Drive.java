@@ -20,6 +20,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
@@ -45,7 +46,9 @@ public class Drive extends SubsystemBase {
   double lStartingPosition; 
   double desiredChange;
   double currentChange;
+  double startingAngle;
   AHRS m_navX = new AHRS();
+  Timer m_shimmyTimer = new Timer();
 
   private final MotorControllerGroup m_leftMotors = 
     new MotorControllerGroup( 
@@ -101,6 +104,8 @@ public class Drive extends SubsystemBase {
 
     m_leftEncoder.setPositionConversionFactor(Constants.kMotorRotationsPerWheelRotations);
     m_rightEncoder.setPositionConversionFactor(Constants.kMotorRotationsPerWheelRotations);
+
+    startingAngle = 0.0;
   }
 
   public void resetNavX(){
@@ -125,6 +130,26 @@ public class Drive extends SubsystemBase {
         () -> {
           /* one-time action goes here */
         });
+  }
+
+  public CommandBase shimmyCommand() {
+    // Inline construction of command goes here.
+    // Subsystem::RunOnce implicitly requires `this` subsystem.
+    return runOnce(
+      () -> {
+        m_shimmyTimer.reset();
+        m_shimmyTimer.start();
+        startingAngle = m_navX.getAngle();
+        System.out.println(startingAngle + "Shimmy");
+      }
+      ).andThen(
+        run (
+        () -> {
+          double desiredTurnCounterClockwise = startingAngle + 15;
+          double desiredTurnClockwise = startingAngle - 15;
+          turnToAngleCommand(desiredTurnCounterClockwise);
+          turnToAngleCommand(desiredTurnClockwise);
+        })).until(()->m_shimmyTimer.hasElapsed(0.5));
   }
 
 

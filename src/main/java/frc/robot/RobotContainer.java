@@ -8,6 +8,7 @@ import frc.robot.Constants;
 import frc.robot.autos.DriveAuto;
 import frc.robot.autos.PickUpCube;
 import frc.robot.autos.SideStartRetrieveAndPark;
+import frc.robot.autos.shimmy;
 import frc.robot.autos.zeroTest;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.ZeroIntake;
@@ -153,6 +154,7 @@ public class RobotContainer {
    //sendable chooser goes here to implement multiple autons 
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return SideStartRetrieveAndPark.sideStartRetrieveAndParkCommand(m_drive, m_intake);
+    return shimmy.shimmyCommand(m_drive);
+    //SideStartRetrieveAndPark.sideStartRetrieveAndParkCommand(m_drive, m_intake);
   }
 }
