@@ -36,6 +36,7 @@ public final class Constants {
   //driving
     public static final double kMotorRotationsPerWheelRotations = 1/8.45;
     public static final double kMetersToWheelRotations = 100 / (2.54 * 6 * Math.PI);
+    public static final int kSolenoidChannel = 5;
 
     //shooting
     public static final double kShootingTimeOut = 1.0;
@@ -46,6 +47,7 @@ public final class Constants {
     public static final float kTiltOutSoftLimit = -28;
     public static final float kTiltInSoftLimit = -8;
     public static final double kConePosition = -29.6;
+    public static final double kIntakeIRDelay = 0.03;
 
 
     //elevator

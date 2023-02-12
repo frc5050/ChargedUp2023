@@ -28,7 +28,7 @@ public class Intake extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   private CANSparkMax m_tiltMotor = new CANSparkMax(Constants.kTiltCANID, MotorType.kBrushless);
   private CANSparkMax m_shootMotor = new CANSparkMax(Constants.kCubeIntakeCANID, MotorType.kBrushless);
-  public Solenoid m_Solenoid = new Solenoid(PneumaticsModuleType.CTREPCM, 5);
+  public Solenoid m_Solenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.kSolenoidChannel);
   private RelativeEncoder m_tiltEncoder;
   private Timer m_intakeTimer;
   private Timer m_autonTimer;
@@ -203,7 +203,7 @@ private boolean m_shooterIRWasPreviouslyTriggered;
     // Subsystem::RunOnce implicitly requires `this` subsystem.
     return run(
         () -> {
-          if (shooterIRisTriggered() && power > 0 && m_intakeTimer.hasElapsed(.05)){
+          if (shooterIRisTriggered() && power > 0 && m_intakeTimer.hasElapsed(Constants.kIntakeIRDelay)){
             m_shootMotor.set(0);
             
           }else{
