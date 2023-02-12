@@ -90,9 +90,9 @@ public class RobotContainer {
     m_joystick.button(8).whileFalse(m_drive.controlBrakeCommand(true));
 
     //tilt 
-    m_driverController.povUp().whileTrue(m_intake.runTiltMotorCommand(-0.3));
+    m_driverController.povUp().whileTrue(m_intake.runTiltMotorCommand(-0.2));
     m_driverController.povCenter().whileTrue(m_intake.runTiltMotorCommand(0.0));
-    m_driverController.povDown().whileTrue(m_intake.runTiltMotorCommand(0.5));
+    m_driverController.povDown().whileTrue(m_intake.runTiltMotorCommand(0.2));
 
 
     //intake
@@ -131,12 +131,12 @@ public class RobotContainer {
      m_driverController.y().whileTrue(m_lifter.coneIntakeCommand(-1.0));
      m_driverController.y().whileFalse(m_lifter.coneIntakeCommand(0.0));
 
-    // //cone lift
+    // //cone unlift
      m_driverController.rightStick().whileTrue(m_lifter.runConeExtendMotorCommand(0.3));
     m_driverController.rightStick().whileFalse(m_lifter.runConeExtendMotorCommand(0));
    
 
-    // //cone unlift
+    // //cone lift
        m_driverController.leftStick().whileTrue(m_lifter.runConeExtendMotorCommand(-0.3));
        m_driverController.leftStick().whileFalse(m_lifter.runConeExtendMotorCommand(0.0));
 

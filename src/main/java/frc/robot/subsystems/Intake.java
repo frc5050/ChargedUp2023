@@ -58,15 +58,16 @@ private boolean m_shooterIRWasPreviouslyTriggered;
     m_autonTimer = new Timer();
     m_shooterIRWasPreviouslyTriggered = false;
     m_shootMotor.enableVoltageCompensation(12);
+    setSoftLimits();
     //m_shootPID.setFF(1 / 5400);
 
 
   }
   public void setSoftLimits(){
-    m_tiltMotor.setSoftLimit(SoftLimitDirection.kForward, 37);
-    m_tiltMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
-    m_tiltMotor.setSoftLimit(SoftLimitDirection.kReverse, 1);
+    m_tiltMotor.setSoftLimit(SoftLimitDirection.kReverse, Constants.kTiltOutSoftLimit);
     m_tiltMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
+    m_tiltMotor.setSoftLimit(SoftLimitDirection.kForward, Constants.kTiltInSoftLimit);
+    m_tiltMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
 
   }
 
@@ -150,6 +151,7 @@ private boolean m_shooterIRWasPreviouslyTriggered;
     return run(
         () -> {
           setTiltMotorPower(power);
+          System.out.println(m_tiltEncoder.getPosition() + "tilt position");
   });
   }
 

@@ -43,6 +43,14 @@ public final class Constants {
 
     //intake 
     public static final double kIntakePower = 0.5;
+    public static final float kTiltOutSoftLimit = -28;
+    public static final float kTiltInSoftLimit = -8;
+    public static final double kConePosition = -29.6;
+
+
+    //elevator
+    public static final float kElevatorTopSoftLimit = -123;
+    public static final float kElevatorBottomSoftLimit = 0;
 
 
   

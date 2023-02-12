@@ -266,7 +266,7 @@ public class Drive extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    System.out.println("compressor: " + m_PneumaticHub.getCompressor());
+    //System.out.println("compressor: " + m_PneumaticHub.getCompressor());
   }
 
   @Override

@@ -26,19 +26,20 @@ public class Lifter extends SubsystemBase {
 
   public Lifter() {
     m_ZeroingTimer = new Timer();
-      m_extendEncoder = m_elevatorMotor.getEncoder();
-      setSoftLimits();
-      m_ConeIntakeMotor.setIdleMode(IdleMode.kBrake);
-      m_elevatorMotor.restoreFactoryDefaults();
-      m_ConeIntakeMotor.restoreFactoryDefaults();
+    m_elevatorMotor.restoreFactoryDefaults();
+    m_ConeIntakeMotor.restoreFactoryDefaults();
+    m_extendEncoder = m_elevatorMotor.getEncoder();
+    m_ConeIntakeMotor.setIdleMode(IdleMode.kBrake);
+    m_elevatorMotor.setIdleMode(IdleMode.kBrake);
+    setSoftLimits();
   }
 
 
   public void setSoftLimits(){
-      //m_elevatorMotor.setSoftLimit(SoftLimitDirection.kReverse, -293);
-     // m_elevatorMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
-     // m_elevatorMotor.setSoftLimit(SoftLimitDirection.kForward, 0);
-     // m_elevatorMotor.enableSoftLimit(SoftLimitDirection.kForward, true); 
+    m_elevatorMotor.setSoftLimit(SoftLimitDirection.kReverse, Constants.kElevatorTopSoftLimit);
+     m_elevatorMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
+     m_elevatorMotor.setSoftLimit(SoftLimitDirection.kForward, Constants.kElevatorBottomSoftLimit);
+     m_elevatorMotor.enableSoftLimit(SoftLimitDirection.kForward, true); 
 
   }
 
@@ -97,7 +98,7 @@ public class Lifter extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    System.out.println(m_extendEncoder.getPosition() + "elevator position");
   }
 
   @Override
