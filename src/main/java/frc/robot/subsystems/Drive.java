@@ -11,6 +11,7 @@ import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.MathUtil;
@@ -18,6 +19,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
@@ -25,17 +27,21 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.PIDController2;
 
 public class Drive extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
-  public Compressor m_compressor = new Compressor(PneumaticsModuleType.CTREPCM);
-  CANSparkMax m_leftFront = new CANSparkMax(4, MotorType.kBrushless);
-  CANSparkMax m_leftRear =  new CANSparkMax(6, MotorType.kBrushless);
-  CANSparkMax m_rightFront = new CANSparkMax(5, MotorType.kBrushless);
-  CANSparkMax m_rightRear = new CANSparkMax(7, MotorType.kBrushless);
+  public Compressor m_compressor = new Compressor(PneumaticsModuleType.REVPH);
+  CANSparkMax m_leftFront = new CANSparkMax(Constants.kLeftFrontCANID, MotorType.kBrushless);
+  CANSparkMax m_leftRear =  new CANSparkMax(Constants.kLeftRearCANID, MotorType.kBrushless);
+  CANSparkMax m_leftMiddle = new CANSparkMax(Constants.kLeftMiddleCANID, MotorType.kBrushless);
+  CANSparkMax m_rightFront = new CANSparkMax(Constants.kRightFrontCANID, MotorType.kBrushless);
+  CANSparkMax m_rightRear = new CANSparkMax(Constants.kRightRearCANID, MotorType.kBrushless);
+  CANSparkMax m_rightMiddle = new CANSparkMax(Constants.kRightMiddleCANID, MotorType.kBrushless);
+  PneumaticHub m_PneumaticHub = new PneumaticHub(Constants.kPHCANID);
   SparkMaxPIDController m_rightPID;
   SparkMaxPIDController m_leftPID;
   PIDController m_turnPID;
@@ -53,24 +59,31 @@ public class Drive extends SubsystemBase {
   private final MotorControllerGroup m_leftMotors = 
     new MotorControllerGroup( 
         m_leftFront,
-        m_leftRear);
+        m_leftRear,
+        m_leftMiddle);
 
   private final MotorControllerGroup m_rightMotors = 
     new MotorControllerGroup(
         m_rightFront,
-        m_rightRear);
-  private Solenoid m_brakeSolenoid = new Solenoid(PneumaticsModuleType.CTREPCM, 3);
+        m_rightRear,
+        m_rightMiddle);
+
+  private Solenoid m_brakeSolenoid = new Solenoid(Constants.kPHCANID,PneumaticsModuleType.REVPH, 7);
   
   private final SimpleMotorFeedforward feedForward = new SimpleMotorFeedforward(0, 0);
 
-  private final DifferentialDrive m_drive = new DifferentialDrive(m_leftMotors, m_rightMotors);
+  // private final DifferentialDrive m_drive = new DifferentialDrive(m_leftMotors, m_rightMotors);
   public Drive() {
 
+  
+    m_PneumaticHub.enableCompressorDigital();
     m_compressor.enableDigital();
 
     m_leftFront.restoreFactoryDefaults();
+    m_leftMiddle.restoreFactoryDefaults();
     m_leftRear.restoreFactoryDefaults();
     m_rightFront.restoreFactoryDefaults();
+    m_rightMiddle.restoreFactoryDefaults();
     m_rightRear.restoreFactoryDefaults();
 
     m_leftEncoder = m_leftFront.getEncoder();
@@ -78,18 +91,23 @@ public class Drive extends SubsystemBase {
 
     m_rightRear.follow(m_rightFront);
     m_leftRear.follow(m_leftFront);
+    m_rightMiddle.follow(m_rightFront);
+    m_leftMiddle.follow(m_leftFront);
 
     m_rightEncoder.setPosition(0);
     m_leftEncoder.setPosition(0);
 
     m_rightFront.setInverted(true);
     m_rightRear.setInverted(true);
+    m_rightMiddle.setInverted(true);
     m_rightMotors.setInverted(false);
     m_leftMotors.setInverted(false);
 
     m_leftFront.enableVoltageCompensation(12.0);
+    m_leftMiddle.enableVoltageCompensation(12.0);
     m_leftRear.enableVoltageCompensation(12.0);
     m_rightFront.enableVoltageCompensation(12.0);
+    m_rightMiddle.enableVoltageCompensation(12.0);
     m_rightRear.enableVoltageCompensation(12.0);
 
     m_rightPID = m_rightFront.getPIDController();
@@ -104,6 +122,13 @@ public class Drive extends SubsystemBase {
 
     m_leftEncoder.setPositionConversionFactor(Constants.kMotorRotationsPerWheelRotations);
     m_rightEncoder.setPositionConversionFactor(Constants.kMotorRotationsPerWheelRotations);
+
+    m_rightFront.setIdleMode(IdleMode.kCoast);
+    m_rightMiddle.setIdleMode(IdleMode.kCoast);
+    m_rightRear.setIdleMode(IdleMode.kCoast);
+    m_leftFront.setIdleMode(IdleMode.kCoast);
+    m_leftMiddle.setIdleMode(IdleMode.kCoast);
+    m_leftRear.setIdleMode(IdleMode.kCoast);
 
     startingAngle = 0.0;
   }
@@ -173,12 +198,15 @@ public class Drive extends SubsystemBase {
           double motorCommand =  MathUtil.clamp(m_tiltPID.calculate(beginningRoll), -0.25, 0.25);
           double leftPower = motorCommand;
           double rightPower = motorCommand; 
-          m_drive.tankDrive(rightPower,leftPower);
-     
+          DifferentialDrive.WheelSpeeds spds = DifferentialDrive.tankDriveIK(rightPower, leftPower, true);
+          // m_drive.tankDrive(rightPower,leftPower);
+          m_leftMotors.set(spds.left);
+          m_rightMotors.set(spds.right);
         });
   }
 
   public void setMotorPower(double speed){
+
     m_leftMotors.set(speed);
     m_rightMotors.set(speed);
   }
@@ -195,13 +223,28 @@ public class Drive extends SubsystemBase {
           m_brakeSolenoid.set(solenoidState)
         );
   }
+
+  public void arcadeDrive(double fwd, double rot, boolean squareInputs){
+    DifferentialDrive.WheelSpeeds spds = DifferentialDrive.arcadeDriveIK(fwd, rot, true);
+         setMotorSpeeds(spds.left, spds.right);
+  }
+  public void setMotorSpeeds(double left, double right) {
+
+    m_leftMotors.set(left / 1.06);
+    m_rightMotors.set(right);
+
+  }
+
+
   public CommandBase arcadeDriveCommand(DoubleSupplier fwd, DoubleSupplier rot) {
     // Inline construction of command goes here.
     // Subsystem::RunOnce implicitly requires `this` subsystem.
     return run(
-        () -> m_drive.arcadeDrive(fwd.getAsDouble(), rot.getAsDouble(), true)         
-        );
+        () -> {
+          arcadeDrive(fwd.getAsDouble(), rot.getAsDouble(), true);
+  });
   }
+
 
  
 
@@ -223,12 +266,14 @@ public class Drive extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    System.out.println("compressor: " + m_PneumaticHub.getCompressor());
   }
 
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
   }
+
 
   //This command takes distance but it also Math.abs's it so the sign of speed determines the direction rather than distance meters
   public CommandBase driveDistanceCommand(double distanceMeters, double speed, double rotation) {
@@ -253,7 +298,7 @@ public class Drive extends SubsystemBase {
               currentChange = currentPosition - lStartingPosition;
 
 
-                m_drive.arcadeDrive(speed, rotation);
+                arcadeDrive(speed, rotation, true);
   })
         // End command when we've traveled the specified distance
         .until(
@@ -261,7 +306,8 @@ public class Drive extends SubsystemBase {
             (currentChange / desiredChange) >= 1)
         // Stop the drive when the command ends
         .finallyDo(interrupted -> {
-               m_drive.stopMotor();
+               m_leftMotors.stopMotor();
+               m_rightMotors.stopMotor();
                System.out.println("interrupted: " + interrupted);
                System.out.println("motor power" + m_leftMotors.get());   })
 
@@ -286,9 +332,7 @@ public class Drive extends SubsystemBase {
             
             double leftPower = -angleCommand;
             double rightPower = angleCommand;
-            m_drive.tankDrive(leftPower, rightPower, false);
-  
-            
+            setMotorSpeeds(leftPower, rightPower);
           }).until(()->m_turnPID.atSetpoint()));
     
     

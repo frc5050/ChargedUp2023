@@ -6,8 +6,11 @@ package frc.robot;
 
 import frc.robot.Constants;
 import frc.robot.autos.DriveAuto;
+import frc.robot.autos.LongSideStartRetrieveAndPark;
+import frc.robot.autos.MiddleStartAndPark;
 import frc.robot.autos.PickUpCube;
-import frc.robot.autos.SideStartRetrieveAndPark;
+import frc.robot.autos.SideStartAndPark;
+import frc.robot.autos.SideStartNeverGiveUp;
 import frc.robot.autos.shimmy;
 import frc.robot.autos.zeroTest;
 import frc.robot.commands.ExampleCommand;
@@ -37,7 +40,7 @@ public class RobotContainer {
   public Drive m_drive = new Drive();
   public Intake m_intake = new Intake();
   public static DriveAuto m_autos = new DriveAuto();
- // public Lifter m_lifter = new Lifter();
+  public Lifter m_lifter = new Lifter();
 
   CommandJoystick m_joystick = new CommandJoystick(1);
 
@@ -96,6 +99,10 @@ public class RobotContainer {
     m_driverController.x().whileTrue(m_intake.runShootMotorCommand(0.5));
     m_driverController.x().whileFalse(m_intake.runShootMotorCommand(0));
 
+    //outtake 
+    m_driverController.b().whileTrue(m_intake.runShootMotorCommand(-0.5));
+    m_driverController.b().whileFalse(m_intake.runShootMotorCommand(0));
+
     //medium height shot
     //m_driverController.leftBumper().whileTrue(m_intake.runShootMotorCommandwithPID(-9000, ControlType.kVelocity));
     m_driverController.leftBumper().whileTrue(m_intake.runShootMotorCommand(-0.7));
@@ -117,21 +124,21 @@ public class RobotContainer {
     //m_driverController.leftTrigger().whileFalse(m_intake.shootPopCommand(false));
 
     // //cone intake
-    // m_driverController.a().whileTrue(m_lifter.coneIntakeCommand(1.0));
-    // m_driverController.a().whileFalse(m_lifter.coneIntakeCommand(0.0));
+     m_driverController.a().whileTrue(m_lifter.coneIntakeCommand(1.0));
+     m_driverController.a().whileFalse(m_lifter.coneIntakeCommand(0.0));
 
     // //and cone outtake
-    // m_driverController.y().whileTrue(m_lifter.coneIntakeCommand(-1.0));
-    // m_driverController.y().whileFalse(m_lifter.coneIntakeCommand(0.0));
+     m_driverController.y().whileTrue(m_lifter.coneIntakeCommand(-1.0));
+     m_driverController.y().whileFalse(m_lifter.coneIntakeCommand(0.0));
 
     // //cone lift
-    // m_driverController.rightStick().whileTrue(m_lifter.runConeExtendMotorCommand(-0.5));
-    // m_driverController.rightStick().whileFalse(m_lifter.runConeExtendMotorCommand(0));
+     m_driverController.rightStick().whileTrue(m_lifter.runConeExtendMotorCommand(0.3));
+    m_driverController.rightStick().whileFalse(m_lifter.runConeExtendMotorCommand(0));
    
 
     // //cone unlift
-    //   m_driverController.leftStick().whileTrue(m_lifter.runConeExtendMotorCommand(0.3));
-    //   m_driverController.leftStick().whileFalse(m_lifter.runConeExtendMotorCommand(0.0));
+       m_driverController.leftStick().whileTrue(m_lifter.runConeExtendMotorCommand(-0.3));
+       m_driverController.leftStick().whileFalse(m_lifter.runConeExtendMotorCommand(0.0));
 
     m_joystick.button(12).whileTrue(m_drive.turnToAngleCommand(90));
     m_joystick.button(12).whileFalse(m_drive.getDefaultCommand());
@@ -154,7 +161,8 @@ public class RobotContainer {
    //sendable chooser goes here to implement multiple autons 
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return shimmy.shimmyCommand(m_drive);
+    return SideStartNeverGiveUp.sideStartNeverGiveUpCommand(m_drive, m_intake);
+    //MiddleStartAndPark.middleStartAndParkCommand(m_drive, m_intake);
     //SideStartRetrieveAndPark.sideStartRetrieveAndParkCommand(m_drive, m_intake);
   }
 }

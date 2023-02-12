@@ -21,12 +21,13 @@ import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.commands.ZeroIntake;
 
 public class Intake extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
-  private CANSparkMax m_tiltMotor = new CANSparkMax(11, MotorType.kBrushless);
-  private CANSparkMax m_shootMotor = new CANSparkMax(13, MotorType.kBrushless);
+  private CANSparkMax m_tiltMotor = new CANSparkMax(Constants.kTiltCANID, MotorType.kBrushless);
+  private CANSparkMax m_shootMotor = new CANSparkMax(Constants.kCubeIntakeCANID, MotorType.kBrushless);
   public Solenoid m_Solenoid = new Solenoid(PneumaticsModuleType.CTREPCM, 5);
   private RelativeEncoder m_tiltEncoder;
   private Timer m_intakeTimer;
@@ -47,7 +48,8 @@ private boolean m_shooterIRWasPreviouslyTriggered;
     m_tiltMotor.restoreFactoryDefaults();
     m_shootMotor.restoreFactoryDefaults();
     m_shootMotor.setIdleMode(IdleMode.kCoast);
-    m_shooterIR = new DigitalInput(1);
+    m_tiltMotor.setIdleMode(IdleMode.kBrake);
+    m_shooterIR = new DigitalInput(2);
     m_shootPID.setP(0.00025);
     m_shootPID.setI(0.0000015);
     m_shootPID.setIZone(200);
@@ -55,6 +57,7 @@ private boolean m_shooterIRWasPreviouslyTriggered;
     m_intakeTimer = new Timer();
     m_autonTimer = new Timer();
     m_shooterIRWasPreviouslyTriggered = false;
+    m_shootMotor.enableVoltageCompensation(12);
     //m_shootPID.setFF(1 / 5400);
 
 
@@ -168,7 +171,7 @@ private boolean m_shooterIRWasPreviouslyTriggered;
         );
   }
 
-  public CommandBase runShootMotorCommandUntil(double power) {
+  public CommandBase runShootMotorCommandUntil(double power, double timeout) {
     // Inline construction of command goes here.
     // Subsystem::RunOnce implicitly requires `this` subsystem.
 
@@ -185,7 +188,7 @@ private boolean m_shooterIRWasPreviouslyTriggered;
           }else{
           m_shootMotor.set(power);
           }}))
-          .withTimeout(1)
+          .withTimeout(timeout)
           .finallyDo((interrupted) -> m_shootMotor.set(0));
   }
 
@@ -200,6 +203,7 @@ private boolean m_shooterIRWasPreviouslyTriggered;
         () -> {
           if (shooterIRisTriggered() && power > 0 && m_intakeTimer.hasElapsed(.05)){
             m_shootMotor.set(0);
+            
           }else{
           m_shootMotor.set(power);
           }

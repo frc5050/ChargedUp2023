@@ -8,32 +8,37 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class Lifter extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
-  private CANSparkMax m_extendMotor = new CANSparkMax(10, MotorType.kBrushless);
-  private TalonSRX m_spinMotor = new TalonSRX(15);
+  private CANSparkMax m_elevatorMotor = new CANSparkMax(Constants.kElevatorCANID, MotorType.kBrushless);
+  private CANSparkMax m_ConeIntakeMotor = new CANSparkMax(Constants.kConeIntakeCANID, MotorType.kBrushless);
   private RelativeEncoder m_extendEncoder;
   private final Timer m_ZeroingTimer;
 
   public Lifter() {
     m_ZeroingTimer = new Timer();
-      m_extendEncoder = m_extendMotor.getEncoder();
+      m_extendEncoder = m_elevatorMotor.getEncoder();
       setSoftLimits();
+      m_ConeIntakeMotor.setIdleMode(IdleMode.kBrake);
+      m_elevatorMotor.restoreFactoryDefaults();
+      m_ConeIntakeMotor.restoreFactoryDefaults();
   }
 
 
   public void setSoftLimits(){
-      m_extendMotor.setSoftLimit(SoftLimitDirection.kReverse, -293);
-      m_extendMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
-      m_extendMotor.setSoftLimit(SoftLimitDirection.kForward, 0);
-      m_extendMotor.enableSoftLimit(SoftLimitDirection.kForward, true); 
+      //m_elevatorMotor.setSoftLimit(SoftLimitDirection.kReverse, -293);
+     // m_elevatorMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
+     // m_elevatorMotor.setSoftLimit(SoftLimitDirection.kForward, 0);
+     // m_elevatorMotor.enableSoftLimit(SoftLimitDirection.kForward, true); 
 
   }
 
@@ -68,8 +73,7 @@ public class Lifter extends SubsystemBase {
   public CommandBase coneIntakeCommand(double power) {
     return run(
         () -> {
-          m_spinMotor.set(ControlMode.PercentOutput, power);
-        });
+          m_ConeIntakeMotor.set( power);        });
       }
 
   public CommandBase runConeExtendMotorCommand(double power) {
@@ -77,7 +81,7 @@ public class Lifter extends SubsystemBase {
   // Subsystem::RunOnce implicitly requires `this` subsystem.
     return run(
         () -> {
-          m_extendMotor.set(power);
+          m_elevatorMotor.set(power);
         });
       }     
 

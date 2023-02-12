@@ -13,6 +13,22 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+  //CAN IDs
+  public static final int kPHCANID = 1;
+  public static final int kLeftFrontCANID = 10;
+  public static final int kLeftRearCANID = 14;
+  public static final int kLeftMiddleCANID = 11;
+  public static final int kRightFrontCANID = 3;
+  public static final int kRightRearCANID = 21; //21 is 1 on pdh
+  public static final int kRightMiddleCANID = 2;
+  public static final int kCubeIntakeCANID = 16;
+  public static final int kTiltCANID = 13;
+  public static final int kElevatorCANID = 20; // twenty is actually zero on pdh
+  public static final int kConeIntakeCANID = 19;
+
+
+
   
   //controller ports
     public static final int kDriverControllerPort = 0;
@@ -20,6 +36,13 @@ public final class Constants {
   //driving
     public static final double kMotorRotationsPerWheelRotations = 1/8.45;
     public static final double kMetersToWheelRotations = 100 / (2.54 * 6 * Math.PI);
+
+    //shooting
+    public static final double kShootingTimeOut = 1.0;
+    public static final double kHighShotMotorPower = -1.0;
+
+    //intake 
+    public static final double kIntakePower = 0.5;
 
 
   
