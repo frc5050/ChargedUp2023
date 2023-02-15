@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -54,6 +55,17 @@ private boolean m_shooterIRWasPreviouslyTriggered;
     m_shootPID.setI(0.0000015);
     m_shootPID.setIZone(200);
     m_shootPID.setD(0);
+
+    m_tiltMotor.setInverted(false);
+
+
+    m_tiltPID.setP(0.01);
+    m_tiltPID.setI(0.0);
+    m_tiltPID.setIZone(0);
+    m_tiltPID.setD(0);
+
+
+
     m_intakeTimer = new Timer();
     m_autonTimer = new Timer();
     m_shooterIRWasPreviouslyTriggered = false;
@@ -69,6 +81,11 @@ private boolean m_shooterIRWasPreviouslyTriggered;
     m_tiltMotor.setSoftLimit(SoftLimitDirection.kForward, Constants.kTiltInSoftLimit);
     m_tiltMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
 
+  }
+
+  public double tiltEncoderCountsToDegrees(double encoderCounts){
+    double degrees = ((-122.0 /-32.0) * encoderCounts) + 130;
+    return degrees;
   }
 
 
@@ -137,6 +154,16 @@ private boolean m_shooterIRWasPreviouslyTriggered;
     m_tiltMotor.set(power);
   }
 
+  public CommandBase tiltToPositionCommand(double position) {
+    // Inline construction of command goes here.
+    // Subsystem::RunOnce implicitly requires `this` subsystem.
+    return run(
+        () -> {
+
+          m_tiltPID.setReference(position, ControlType.kPosition);
+  });
+  }
+
   public void zeroTiltMotor(){
     m_tiltEncoder.setPosition(0.0);
   }
@@ -151,7 +178,6 @@ private boolean m_shooterIRWasPreviouslyTriggered;
     return run(
         () -> {
           setTiltMotorPower(power);
-          System.out.println(m_tiltEncoder.getPosition() + "tilt position");
   });
   }
 
@@ -238,6 +264,9 @@ private boolean m_shooterIRWasPreviouslyTriggered;
       m_intakeTimer.reset();
     }
     m_shooterIRWasPreviouslyTriggered = shooterIRisTriggered();
+
+    SmartDashboard.putNumber("tilt Position Degrees", tiltEncoderCountsToDegrees(getTiltMotorPosition()));
+    SmartDashboard.putNumber("tilt position encoder counts", getTiltMotorPosition());
   }
 
   @Override

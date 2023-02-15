@@ -8,11 +8,14 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -21,18 +24,26 @@ public class Lifter extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   private CANSparkMax m_elevatorMotor = new CANSparkMax(Constants.kElevatorCANID, MotorType.kBrushless);
   private CANSparkMax m_ConeIntakeMotor = new CANSparkMax(Constants.kConeIntakeCANID, MotorType.kBrushless);
-  private RelativeEncoder m_extendEncoder;
+  private RelativeEncoder m_elevatorEncoder;
+  private SparkMaxPIDController m_elevatorPID; 
   private final Timer m_ZeroingTimer;
 
   public Lifter() {
     m_ZeroingTimer = new Timer();
     m_elevatorMotor.restoreFactoryDefaults();
     m_ConeIntakeMotor.restoreFactoryDefaults();
-    m_extendEncoder = m_elevatorMotor.getEncoder();
+    m_elevatorEncoder = m_elevatorMotor.getEncoder();
     m_ConeIntakeMotor.setIdleMode(IdleMode.kBrake);
     m_elevatorMotor.setIdleMode(IdleMode.kBrake);
+    m_elevatorPID = m_elevatorMotor.getPIDController();
+    m_elevatorPID.setP(0.5);
+    m_elevatorPID.setI(0);
+    m_elevatorPID.setD(0);
+
     setSoftLimits();
   }
+
+
 
 
   public void setSoftLimits(){
@@ -50,10 +61,10 @@ public class Lifter extends SubsystemBase {
 
   public void zeroing(){
     boolean extendZeroed = 
-      (m_extendEncoder.getVelocity() < 0.0001
+      (m_elevatorEncoder.getVelocity() < 0.0001
       && m_ZeroingTimer.hasElapsed(0.3));
       if(extendZeroed){
-        m_extendEncoder.setPosition(0.0);
+        m_elevatorEncoder.setPosition(0.0);
       }
   }
 
@@ -71,20 +82,36 @@ public class Lifter extends SubsystemBase {
         });
   }
 
+
+  public CommandBase elevatorDoNothingCommand() {
+    return run(
+        () -> {
+          m_elevatorMotor.set(0.0);
+        });
+  }
+
   public CommandBase coneIntakeCommand(double power) {
     return run(
         () -> {
           m_ConeIntakeMotor.set( power);        });
       }
 
-  public CommandBase runConeExtendMotorCommand(double power) {
+  public CommandBase runElevatorCommand(double power) {
   // Inline construction of command goes here.
   // Subsystem::RunOnce implicitly requires `this` subsystem.
     return run(
         () -> {
           m_elevatorMotor.set(power);
         });
-      }     
+      }   
+      
+      
+    public CommandBase elevatorPIDCommand(double position){
+      return run(
+        () -> {
+         m_elevatorPID.setReference(position, ControlType.kPosition);
+        });
+    }
 
   /**
    * An example method querying a boolean state of the subsystem (for example, a digital sensor).
@@ -95,11 +122,11 @@ public class Lifter extends SubsystemBase {
     // Query some boolean state, such as a digital sensor.
     return false;
   }
-
+  //commented out on sydneys request
   @Override
   public void periodic() {
-    System.out.println(m_extendEncoder.getPosition() + "elevator position");
-  }
+    SmartDashboard.putNumber("elevator position", m_elevatorEncoder.getPosition());
+ }
 
   @Override
   public void simulationPeriodic() {

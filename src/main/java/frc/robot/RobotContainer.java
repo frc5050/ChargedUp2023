@@ -14,6 +14,7 @@ import frc.robot.autos.SideStartNeverGiveUp;
 import frc.robot.autos.shimmy;
 import frc.robot.autos.zeroTest;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.HighConeCommand;
 import frc.robot.commands.ZeroIntake;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.ExampleSubsystem;
@@ -41,7 +42,6 @@ public class RobotContainer {
   public Intake m_intake = new Intake();
   public static DriveAuto m_autos = new DriveAuto();
   public Lifter m_lifter = new Lifter();
-
   CommandJoystick m_joystick = new CommandJoystick(1);
 
 
@@ -78,7 +78,6 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    m_joystick.button(7).whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
     m_drive.setDefaultCommand(  
             m_drive.arcadeDriveCommand(
@@ -86,14 +85,20 @@ public class RobotContainer {
 
     m_intake.setDefaultCommand(m_intake.tiltDoNothingCommand());
 
+    //m_intake.setDefaultCommand(m_intake.runTiltMotorCommand(m_driverController.getLeftX()));
+
+  
+    
+
+    m_lifter.setDefaultCommand(m_lifter.elevatorDoNothingCommand());
+
     m_joystick.button(8).whileTrue(m_drive.controlBrakeCommand(false));
     m_joystick.button(8).whileFalse(m_drive.controlBrakeCommand(true));
 
     //tilt 
-    m_driverController.povUp().whileTrue(m_intake.runTiltMotorCommand(-0.2));
+    m_driverController.povUp().whileTrue(m_intake.runTiltMotorCommand(-0.5));
     m_driverController.povCenter().whileTrue(m_intake.runTiltMotorCommand(0.0));
-    m_driverController.povDown().whileTrue(m_intake.runTiltMotorCommand(0.2));
-
+    m_driverController.povDown().whileTrue(m_intake.runTiltMotorCommand(0.5));
 
     //intake
     m_driverController.x().whileTrue(m_intake.runShootMotorCommand(0.5));
@@ -104,17 +109,17 @@ public class RobotContainer {
     m_driverController.b().whileFalse(m_intake.runShootMotorCommand(0));
 
     //medium height shot
+    m_joystick.button(5).whileTrue(m_intake.runShootMotorCommand(-0.5));
+    m_joystick.button(5).whileFalse(m_intake.runShootMotorCommand(0.0));
     //m_driverController.leftBumper().whileTrue(m_intake.runShootMotorCommandwithPID(-9000, ControlType.kVelocity));
-    m_driverController.leftBumper().whileTrue(m_intake.runShootMotorCommand(-0.7));
-    m_driverController.leftBumper().whileFalse(m_intake.runShootMotorCommand(0));
     //m_driverController.leftBumper().whileTrue(m_intake.shootPopCommand(true));
     //m_driverController.leftBumper().whileFalse(m_intake.shootPopCommand(false));
 
 
     //high
+    m_joystick.button(6).whileTrue(m_intake.runShootMotorCommand(-0.7));
+    m_joystick.button(6).whileFalse(m_intake.runShootMotorCommand(0.0));
     //m_driverController.rightBumper().whileTrue(m_intake.runShootMotorCommandwithPID(-14000, ControlType.kVelocity));
-    m_driverController.rightBumper().whileTrue(m_intake.runShootMotorCommand(-1.0));
-    m_driverController.rightBumper().whileFalse(m_intake.runShootMotorCommand(0));
     //m_driverController.rightBumper().whileTrue(m_intake.shootPopCommand(true));
     //m_driverController.rightBumper().whileFalse(m_intake.shootPopCommand(false));
 
@@ -131,23 +136,43 @@ public class RobotContainer {
      m_driverController.y().whileTrue(m_lifter.coneIntakeCommand(-1.0));
      m_driverController.y().whileFalse(m_lifter.coneIntakeCommand(0.0));
 
-    // //cone unlift
-     m_driverController.rightStick().whileTrue(m_lifter.runConeExtendMotorCommand(0.3));
-    m_driverController.rightStick().whileFalse(m_lifter.runConeExtendMotorCommand(0));
+    // //elevator down
+     m_driverController.rightStick().whileTrue(m_lifter.runElevatorCommand(0.7));
+    m_driverController.rightStick().whileFalse(m_lifter.runElevatorCommand(0));
+
+    //tilt to position
+    m_driverController.rightTrigger().whileTrue(m_intake.tiltToPositionCommand(Constants.kTiltConePickUpHumanPlayerPosition));
+    m_driverController.rightTrigger().whileFalse(m_intake.getDefaultCommand());
    
 
-    // //cone lift
-       m_driverController.leftStick().whileTrue(m_lifter.runConeExtendMotorCommand(-0.3));
-       m_driverController.leftStick().whileFalse(m_lifter.runConeExtendMotorCommand(0.0));
+    // //elevator up
+       m_driverController.leftStick().whileTrue(m_lifter.runElevatorCommand(-0.7));
+       m_driverController.leftStick().whileFalse(m_lifter.runElevatorCommand(0.0));
 
-    m_joystick.button(12).whileTrue(m_drive.turnToAngleCommand(90));
-    m_joystick.button(12).whileFalse(m_drive.getDefaultCommand());
 
-    m_joystick.button(9).whileTrue(m_drive.balanceRollCommand(0.0));
-    m_joystick.button(9).whileFalse(m_drive.getDefaultCommand());
 
-    m_joystick.button(11).whileTrue(m_intake.zeroTiltMotorCommand());
-    m_joystick.button(11).whileFalse(m_intake.getDefaultCommand());
+    //m_joystick.button(12).whileTrue(m_drive.turnToAngleCommand(90));
+    //m_joystick.button(12).whileFalse(m_drive.getDefaultCommand());
+
+    m_joystick.button(7).whileTrue(m_drive.balanceRollCommand(0.0));
+    m_joystick.button(7).whileFalse(m_drive.getDefaultCommand());
+
+    m_joystick.button(12).whileTrue(m_intake.zeroTiltMotorCommand());
+    m_joystick.button(12).whileFalse(m_intake.getDefaultCommand());
+
+    m_joystick.button(10).whileTrue(HighConeCommand.HighConeConfigurationCommand(m_intake, m_lifter));
+    m_joystick.button(10).whileFalse(m_lifter.getDefaultCommand());
+
+    m_joystick.button(9).whileTrue(m_lifter.elevatorPIDCommand(Constants.kElevatorMiddlePosition));
+    m_joystick.button(9).whileFalse(m_lifter.getDefaultCommand());
+
+   
+
+  
+
+    
+
+    
 
   }
 
