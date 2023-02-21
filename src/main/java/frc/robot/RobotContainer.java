@@ -17,6 +17,7 @@ import frc.robot.autos.shimmy;
 import frc.robot.autos.zeroTest;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.HighConeCommand;
+import frc.robot.commands.MediumConeCommand;
 import frc.robot.commands.ZeroIntake;
 import frc.robot.subsystems.Brake;
 import frc.robot.subsystems.Drive;
@@ -185,8 +186,11 @@ public class RobotContainer {
     m_joystick.button(10).whileTrue(HighConeCommand.HighConeConfigurationCommand(m_intake, m_lifter));
     m_joystick.button(10).whileFalse(m_lifter.getDefaultCommand());
 
-    m_joystick.button(9).whileTrue(m_lifter.elevatorPIDCommand(Constants.kElevatorMiddlePosition));
+    m_joystick.button(9).whileTrue(MediumConeCommand.MediumConeConfigurationCommand(m_intake, m_lifter));
     m_joystick.button(9).whileFalse(m_lifter.getDefaultCommand());
+
+    m_joystick.button(11).whileTrue(m_lifter.elevatorPIDCommand(Constants.kElevatorDownPosition));
+    m_joystick.button(11).whileFalse(m_lifter.getDefaultCommand());
 
    
 

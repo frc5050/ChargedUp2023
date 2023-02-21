@@ -65,5 +65,6 @@ public final class Constants {
     public static final float kElevatorBottomSoftLimit = 0;
     public static final double kElevatorHighPosition = -126.58;
     public static final double kElevatorMiddlePosition = -96;
+    public static final double kElevatorDownPosition = 0.0;
 
 }
