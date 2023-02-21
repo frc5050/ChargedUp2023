@@ -34,9 +34,10 @@ public class Lifter extends SubsystemBase {
     m_ConeIntakeMotor.restoreFactoryDefaults();
     m_elevatorEncoder = m_elevatorMotor.getEncoder();
     m_ConeIntakeMotor.setIdleMode(IdleMode.kBrake);
+    m_ConeIntakeMotor.setSmartCurrentLimit(10);
     m_elevatorMotor.setIdleMode(IdleMode.kBrake);
     m_elevatorPID = m_elevatorMotor.getPIDController();
-    m_elevatorPID.setP(0.5);
+    m_elevatorPID.setP(0.7);
     m_elevatorPID.setI(0);
     m_elevatorPID.setD(0);
 

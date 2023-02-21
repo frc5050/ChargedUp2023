@@ -11,11 +11,14 @@ import frc.robot.autos.MiddleStartAndPark;
 import frc.robot.autos.PickUpCube;
 import frc.robot.autos.SideStartAndPark;
 import frc.robot.autos.SideStartNeverGiveUp;
+import frc.robot.autos.TestAuto;
+import frc.robot.autos.doNothing;
 import frc.robot.autos.shimmy;
 import frc.robot.autos.zeroTest;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.HighConeCommand;
 import frc.robot.commands.ZeroIntake;
+import frc.robot.subsystems.Brake;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Intake;
@@ -25,6 +28,7 @@ import com.revrobotics.CANSparkMax.ControlType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -42,6 +46,7 @@ public class RobotContainer {
   public Intake m_intake = new Intake();
   public static DriveAuto m_autos = new DriveAuto();
   public Lifter m_lifter = new Lifter();
+  public Brake m_brake = new Brake();
   CommandJoystick m_joystick = new CommandJoystick(1);
 
 
@@ -79,26 +84,43 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
 
-    m_drive.setDefaultCommand(  
+    m_drive.setDefaultCommand(
             m_drive.arcadeDriveCommand(
-          () -> -m_joystick.getY(), () -> -m_joystick.getX()) );  
+          () -> -m_joystick.getY(), () -> -m_joystick.getX()));  
 
     m_intake.setDefaultCommand(m_intake.tiltDoNothingCommand());
 
-    //m_intake.setDefaultCommand(m_intake.runTiltMotorCommand(m_driverController.getLeftX()));
+    m_brake.setDefaultCommand(m_brake.setBrakeCommand(m_joystick.button(8)));
+
+    m_intake.setDefaultCommand(m_intake.runTiltMotorCommand(() -> m_driverController.getLeftY()));
 
   
     
 
     m_lifter.setDefaultCommand(m_lifter.elevatorDoNothingCommand());
 
-    m_joystick.button(8).whileTrue(m_drive.controlBrakeCommand(false));
-    m_joystick.button(8).whileFalse(m_drive.controlBrakeCommand(true));
+    //m_joystick.button(8).whileTrue(m_drive.setBrakeDownCommand());
+    //m_joystick.button(8).whileFalse(m_drive.setBrakeUpCommand());
 
     //tilt 
     m_driverController.povUp().whileTrue(m_intake.runTiltMotorCommand(-0.5));
     m_driverController.povCenter().whileTrue(m_intake.runTiltMotorCommand(0.0));
     m_driverController.povDown().whileTrue(m_intake.runTiltMotorCommand(0.5));
+
+    // runTi
+    m_intake.setDefaultCommand(
+      m_intake.runTiltMotorCommand(
+    () -> {
+      if (m_driverController.povDown().getAsBoolean() || m_driverController.povDownLeft().getAsBoolean() || m_driverController.povDownRight().getAsBoolean()) {
+        return 0.5;
+      }
+      else if (m_driverController.povUp().getAsBoolean() || m_driverController.povUpLeft().getAsBoolean() || m_driverController.povUpRight().getAsBoolean()) {
+        return -0.5;
+      }
+      return 0.0;
+    }
+      )
+    );
 
     //intake
     m_driverController.x().whileTrue(m_intake.runShootMotorCommand(0.5));
@@ -116,7 +138,7 @@ public class RobotContainer {
     //m_driverController.leftBumper().whileFalse(m_intake.shootPopCommand(false));
 
 
-    //high
+    //high shot
     m_joystick.button(6).whileTrue(m_intake.runShootMotorCommand(-0.7));
     m_joystick.button(6).whileFalse(m_intake.runShootMotorCommand(0.0));
     //m_driverController.rightBumper().whileTrue(m_intake.runShootMotorCommandwithPID(-14000, ControlType.kVelocity));
@@ -186,7 +208,8 @@ public class RobotContainer {
    //sendable chooser goes here to implement multiple autons 
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return SideStartNeverGiveUp.sideStartNeverGiveUpCommand(m_drive, m_intake);
+    return TestAuto.middleStartAndParkCommand(m_drive, m_intake);
+    //SideStartNeverGiveUp.sideStartNeverGiveUpCommand(m_drive, m_intake, m_brake);
     //MiddleStartAndPark.middleStartAndParkCommand(m_drive, m_intake);
     //SideStartRetrieveAndPark.sideStartRetrieveAndParkCommand(m_drive, m_intake);
   }

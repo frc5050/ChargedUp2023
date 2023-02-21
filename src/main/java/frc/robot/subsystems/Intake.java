@@ -4,8 +4,12 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxAbsoluteEncoder;
+import com.revrobotics.SparkMaxAlternateEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
@@ -36,17 +40,22 @@ public class Intake extends SubsystemBase {
   private RelativeEncoder m_shootEncoder; 
   private SparkMaxPIDController m_tiltPID;
   private SparkMaxPIDController m_shootPID;
+  private RelativeEncoder m_tiltShaftEncoder;
   private DigitalInput m_shooterIR;
   
 private boolean m_shooterIRWasPreviouslyTriggered;
+
 
 
   public Intake() {
     m_tiltEncoder = m_tiltMotor.getEncoder();
     m_shootEncoder = m_shootMotor.getEncoder();
     m_tiltPID = m_tiltMotor.getPIDController();
+    // m_tiltAltEncoder = m_tiltMotor
+    // m_tiltAbsEncoder = m_tiltMotor.getAbsoluteEncoder(SparkMaxAbsoluteEncoder.Type.kDutyCycle);
     m_shootPID = m_shootMotor.getPIDController();
-    m_tiltMotor.restoreFactoryDefaults();
+    m_tiltShaftEncoder = m_tiltMotor.getAlternateEncoder(SparkMaxAlternateEncoder.Type.kQuadrature, 8192);
+    // BE() CAREFUL WITH ALTERNATE ENCODER m_tiltMotor.restoreFactoryDefaults(); BE CAREFUL WITH ALTERNATE ENCODER()
     m_shootMotor.restoreFactoryDefaults();
     m_shootMotor.setIdleMode(IdleMode.kCoast);
     m_tiltMotor.setIdleMode(IdleMode.kBrake);
@@ -83,8 +92,8 @@ private boolean m_shooterIRWasPreviouslyTriggered;
 
   }
 
-  public double tiltEncoderCountsToDegrees(double encoderCounts){
-    double degrees = ((-122.0 /-32.0) * encoderCounts) + 130;
+  public double tiltShaftEncoderCountsToDegrees(double encoderCounts){
+    double degrees = ((122 /-0.388) * encoderCounts) + 130;
     return degrees;
   }
 
@@ -181,6 +190,16 @@ private boolean m_shooterIRWasPreviouslyTriggered;
   });
   }
 
+  public CommandBase runTiltMotorCommand(DoubleSupplier power) {
+    // Inline construction of command goes here.
+    // Subsystem::RunOnce implicitly requires `this` subsystem.
+    return run(
+        () -> {
+          SmartDashboard.putNumber("Tilt Motor Power", power.getAsDouble());
+          setTiltMotorPower(power.getAsDouble());
+  });
+  }
+
   public CommandBase runTiltMotorCommandUntil(double power) {
     // Inline construction of command goes here.
     // Subsystem::RunOnce implicitly requires `this` subsystem.
@@ -265,8 +284,9 @@ private boolean m_shooterIRWasPreviouslyTriggered;
     }
     m_shooterIRWasPreviouslyTriggered = shooterIRisTriggered();
 
-    SmartDashboard.putNumber("tilt Position Degrees", tiltEncoderCountsToDegrees(getTiltMotorPosition()));
+    SmartDashboard.putNumber("tilt Position Degrees", tiltShaftEncoderCountsToDegrees(m_tiltShaftEncoder.getPosition()));
     SmartDashboard.putNumber("tilt position encoder counts", getTiltMotorPosition());
+    SmartDashboard.putNumber("tilt motor alternate encoder", m_tiltShaftEncoder.getPosition());
   }
 
   @Override

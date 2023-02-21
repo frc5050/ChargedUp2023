@@ -9,9 +9,10 @@ import frc.robot.subsystems.Lifter;
 
 public class HighConeCommand extends CommandBase {
 
-
+//High cone on button :)
     public static Command HighConeConfigurationCommand (Intake intake, Lifter lifter){
-        return Commands.parallel(intake.tiltToPositionCommand(Constants.kTiltConeHighPosition), lifter.elevatorPIDCommand(Constants.kElevatorHighPosition));
+        return Commands.parallel(intake.tiltToPositionCommand(Constants.kTiltConeHighPosition), 
+        lifter.elevatorPIDCommand(Constants.kElevatorHighPosition));
 
      
     }

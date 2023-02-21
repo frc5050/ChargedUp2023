@@ -34,9 +34,16 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
 
   //driving
+    
+    // Note: makes turning slower
+    public static final int kDriveSmartCurrentLimit = 25;
+
     public static final double kMotorRotationsPerWheelRotations = 1/8.45;
-    public static final double kMetersToWheelRotations = 100 / (2.54 * 6 * Math.PI);
+    public static final double kMetersToWheelRotations = 100.0 / (2.54 * 6.0 * Math.PI);
+    public static final double kMotorRotationsToMeters = kMotorRotationsPerWheelRotations / kMetersToWheelRotations;
+    public static final double kVelocityConversionFactor = (1.0/60.0) * kMotorRotationsToMeters;
     public static final int kSolenoidChannel = 5;
+    public static final double kStraightP = 0.2;
 
     //shooting
     public static final double kShootingTimeOut = 1.0;
@@ -44,6 +51,7 @@ public final class Constants {
 
     //intake 
     public static final double kIntakePower = 0.5;
+    public static final double kIntakeTiltOutPower = -0.3;
     public static final float kTiltOutSoftLimit = -32;
     public static final float kTiltInSoftLimit = -8;
     public static final double kConePosition = -29.6;
@@ -53,12 +61,9 @@ public final class Constants {
 
 
     //elevator
-    public static final float kElevatorTopSoftLimit = -123;
+    public static final float kElevatorTopSoftLimit = -126.6f;
     public static final float kElevatorBottomSoftLimit = 0;
-    public static final double kElevatorHighPosition = -123;
-    public static final double kElevatorMiddlePosition = -110;
-
-
-  
+    public static final double kElevatorHighPosition = -126.58;
+    public static final double kElevatorMiddlePosition = -96;
 
 }
