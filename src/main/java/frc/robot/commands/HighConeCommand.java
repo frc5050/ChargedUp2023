@@ -11,7 +11,7 @@ public class HighConeCommand extends CommandBase {
 
 //High cone on button :)
     public static Command HighConeConfigurationCommand (Intake intake, Lifter lifter){
-        return Commands.parallel(intake.tiltToPositionCommand(Constants.kTiltConeHighPosition), 
+        return Commands.parallel(intake.tiltToDegreesCommand(Constants.kTiltConeHighPositionDegrees), 
         lifter.elevatorPIDCommand(Constants.kElevatorHighPosition));
 
      

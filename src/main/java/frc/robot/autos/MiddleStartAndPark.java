@@ -11,8 +11,11 @@ public class MiddleStartAndPark extends CommandBase{
 
     public static Command middleStartAndParkCommand(Drive drive, Intake intake){
         return Commands.sequence(
+            drive.zeroYawCommand(),
             intake.runShootMotorCommandUntil(Constants.kHighShotMotorPower, Constants.kShootingTimeOut),
-            drive.driveDistanceCommand(-5, -0.5, 0.0),
+            drive.turnToAbsoluteAngleCommand(180),
+            intake.runTiltMotorCommandUntil(Constants.kIntakeTiltOutPower),
+            drive.driveDistanceCommand(5, 0.5, 0.0),
             drive.driveDistanceCommand(3, 0.5, 0.0),
             drive.balanceRollCommand(0)
             //drive.controlBrakeCommand(false)

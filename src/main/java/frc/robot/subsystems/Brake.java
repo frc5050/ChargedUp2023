@@ -11,11 +11,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Brake extends SubsystemBase{
-    private Solenoid m_brakeSolenoid = new Solenoid(Constants.kPHCANID,PneumaticsModuleType.REVPH, 7);
-    public Compressor m_compressor = new Compressor(PneumaticsModuleType.REVPH);
-    PneumaticHub m_PneumaticHub = new PneumaticHub(Constants.kPHCANID);
-
+    private Solenoid m_brakeSolenoid;
+    public Compressor m_compressor;
+    PneumaticHub m_PneumaticHub;
     public Brake() {
+        m_PneumaticHub = new PneumaticHub(Constants.kPHCANID);
+        m_compressor = new Compressor(PneumaticsModuleType.REVPH);
+        m_brakeSolenoid = new Solenoid(Constants.kPHCANID,PneumaticsModuleType.REVPH, 7);
         m_PneumaticHub.enableCompressorDigital();
         m_compressor.enableDigital();    
     }

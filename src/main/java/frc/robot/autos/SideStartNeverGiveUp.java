@@ -11,11 +11,12 @@ public class SideStartNeverGiveUp {
     
     public static Command sideStartNeverGiveUpCommand(Drive drive, Intake intake, Brake brake){
         return Commands.sequence(
+                drive.zeroYawCommand(),
                 drive.zeroDriveEncoderCommand(),
                 brake.setBrakeUpCommand(),
                 // intake.runShootMotorCommandUntil(Constants.kHighShotMotorPower, Constants.kShootingTimeOut),
                 // drive.driveDistanceCommand(-5, 1.0, 0.0),
-                drive.turnToAngleCommand(180),
+                drive.turnToAbsoluteAngleCommand(180),
                 // intake.runTiltMotorCommandUntil(Constants.kIntakeTiltOutPower),
 
                 Commands.parallel(

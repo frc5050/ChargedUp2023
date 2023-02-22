@@ -11,8 +11,9 @@ public class MediumConeCommand extends CommandBase {
 
 //Medium cone on button :)
     public static Command MediumConeConfigurationCommand (Intake intake, Lifter lifter){
-        return Commands.parallel(intake.tiltToPositionCommand(Constants.kConePosition), 
-        lifter.elevatorPIDCommand(Constants.kElevatorMiddlePosition));
+        return Commands.parallel(
+            intake.tiltToDegreesCommand(Constants.kMidConePosition), 
+            lifter.elevatorPIDCommand(Constants.kElevatorMiddlePosition));
 
      
     }

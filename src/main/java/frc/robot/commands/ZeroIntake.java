@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import frc.robot.Constants;
 import frc.robot.subsystems.Intake;
 
 import com.revrobotics.CANSparkMax;
@@ -47,7 +48,7 @@ public class ZeroIntake extends CommandBase {
     } else if (!m_intake.isRunningSlowly()){
       m_timer.stop();
     }
-    m_intake.setTiltMotorPower(-0.2);
+    m_intake.setTiltMotorPower(Constants.kIntakeTiltZeroPower);
     wasRunningSlowly = m_intake.isRunningSlowly();
   }
 

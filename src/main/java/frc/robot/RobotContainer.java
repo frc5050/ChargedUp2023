@@ -13,7 +13,6 @@ import frc.robot.autos.SideStartAndPark;
 import frc.robot.autos.SideStartNeverGiveUp;
 import frc.robot.autos.TestAuto;
 import frc.robot.autos.doNothing;
-import frc.robot.autos.shimmy;
 import frc.robot.autos.zeroTest;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.HighConeCommand;
@@ -132,7 +131,7 @@ public class RobotContainer {
     m_driverController.b().whileFalse(m_intake.runShootMotorCommand(0));
 
     //medium height shot
-    m_joystick.button(5).whileTrue(m_intake.runShootMotorCommand(-0.5));
+    m_joystick.button(5).whileTrue(m_intake.runShootMotorCommand(Constants.kMidShotMotorPower));
     m_joystick.button(5).whileFalse(m_intake.runShootMotorCommand(0.0));
     //m_driverController.leftBumper().whileTrue(m_intake.runShootMotorCommandwithPID(-9000, ControlType.kVelocity));
     //m_driverController.leftBumper().whileTrue(m_intake.shootPopCommand(true));
@@ -140,7 +139,7 @@ public class RobotContainer {
 
 
     //high shot
-    m_joystick.button(6).whileTrue(m_intake.runShootMotorCommand(-0.7));
+    m_joystick.button(6).whileTrue(m_intake.runShootMotorCommand(Constants.kHighShotMotorPower));
     m_joystick.button(6).whileFalse(m_intake.runShootMotorCommand(0.0));
     //m_driverController.rightBumper().whileTrue(m_intake.runShootMotorCommandwithPID(-14000, ControlType.kVelocity));
     //m_driverController.rightBumper().whileTrue(m_intake.shootPopCommand(true));
@@ -164,8 +163,9 @@ public class RobotContainer {
     m_driverController.rightStick().whileFalse(m_lifter.runElevatorCommand(0));
 
     //tilt to position
-    m_driverController.rightTrigger().whileTrue(m_intake.tiltToPositionCommand(Constants.kTiltConePickUpHumanPlayerPosition));
-    m_driverController.rightTrigger().whileFalse(m_intake.getDefaultCommand());
+    // TODO
+    // m_driverController.rightTrigger().whileTrue(m_intake.tiltToPositionCommand(Constants.kTiltConePickUpHumanPlayerPosition));
+    // m_driverController.rightTrigger().whileFalse(m_intake.getDefaultCommand());
    
 
     // //elevator up
@@ -192,6 +192,11 @@ public class RobotContainer {
     m_joystick.button(11).whileTrue(m_lifter.elevatorPIDCommand(Constants.kElevatorDownPosition));
     m_joystick.button(11).whileFalse(m_lifter.getDefaultCommand());
 
+    m_joystick.button(1).whileTrue(m_intake.tiltToDegreesCommand(90));
+    m_joystick.button(1).whileFalse(m_intake.getDefaultCommand());
+    m_joystick.button(2).whileTrue(m_intake.tiltToDegreesCommand(75));
+    m_joystick.button(2).whileFalse(m_intake.getDefaultCommand());
+
    
 
   
@@ -212,8 +217,9 @@ public class RobotContainer {
    //sendable chooser goes here to implement multiple autons 
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return TestAuto.middleStartAndParkCommand(m_drive, m_intake);
-    //SideStartNeverGiveUp.sideStartNeverGiveUpCommand(m_drive, m_intake, m_brake);
+    return 
+    //TestAuto.middleStartAndParkCommand(m_drive, m_intake);
+    SideStartNeverGiveUp.sideStartNeverGiveUpCommand(m_drive, m_intake, m_brake);
     //MiddleStartAndPark.middleStartAndParkCommand(m_drive, m_intake);
     //SideStartRetrieveAndPark.sideStartRetrieveAndParkCommand(m_drive, m_intake);
   }

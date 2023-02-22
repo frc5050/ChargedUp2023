@@ -11,7 +11,8 @@ public class PickUpCube {
 
         public static Command autoTurnCommand(Drive drive, Intake intake) {
             drive.resetNavX();
-            return Commands.sequence(intake.runShootMotorCommandUntil(-1.0, 1),drive.turnToAngleCommand(180), drive.driveDistanceCommand(3.5, 0.5, 0.115), intake.runTiltMotorCommandUntil(0.3), intake.runShootMotorCommandUntil(0.5, Constants.kShootingTimeOut));
+            return
+            Commands.sequence(drive.zeroYawCommand(), intake.runShootMotorCommandUntil(-1.0, 1),drive.turnToAbsoluteAngleCommand(180), drive.driveDistanceCommand(3.5, 0.5, 0.115), intake.runTiltMotorCommandUntil(0.3), intake.runShootMotorCommandUntil(0.5, Constants.kShootingTimeOut));
           }
     
           public PickUpCube(){

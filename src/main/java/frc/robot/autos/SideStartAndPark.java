@@ -14,14 +14,16 @@ public class SideStartAndPark extends CommandBase{
 
     public static Command sideStartAndParkCommand(Drive drive, Intake intake, Brake brake) {
         drive.resetNavX();
-        return Commands.sequence(intake.zeroTiltMotorCommand(),  
+        return Commands.sequence(
+            drive.zeroYawCommand(),
+            intake.zeroTiltMotorCommand(),  
             drive.zeroDriveEncoderCommand(),
             brake.setBrakeUpCommand(),
             intake.runShootMotorCommandUntil(-1.0, Constants.kShootingTimeOut), 
             drive.driveDistanceCommand(-5, -0.75, -0.20),
-            drive.turnToAngleCommand(45),
+            drive.turnToAbsoluteAngleCommand(45),
             drive.driveDistanceCommand(3, 0.6, -0.1),
-            drive.turnToAngleCommand(0),
+            drive.turnToAbsoluteAngleCommand(0),
             drive.driveDistanceCommand(2, 0.4, -0.1),
             drive.balanceRollCommand(0));
       }

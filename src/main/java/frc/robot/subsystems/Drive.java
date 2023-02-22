@@ -49,7 +49,7 @@ public class Drive extends SubsystemBase {
   CANSparkMax m_rightMiddle = new CANSparkMax(Constants.kRightMiddleCANID, MotorType.kBrushless);
   ProfiledPIDController m_driveStraightPID;
   PIDController m_turnPID;
-  PIDController m_tiltPID;
+  PIDController m_balancePID;
   RelativeEncoder m_leftEncoder;
   RelativeEncoder m_rightEncoder;
   double adjustedDistanceMeters;
@@ -109,10 +109,10 @@ public class Drive extends SubsystemBase {
     m_turnPID = new PIDController(0.02, 0, 0.0001);
     m_turnPID.enableContinuousInput(-180, 180);
 
-    m_turnPID.setTolerance(2.0, 1.0);
+    m_turnPID.setTolerance(2.0, 0.5);
 
-    m_tiltPID = new PIDController(0.023, 0, 0);
-    m_tiltPID.setTolerance(7);
+    m_balancePID = new PIDController(0.0023, 0, 0);
+    m_balancePID.setTolerance(7);
 
     m_leftEncoder.setPositionConversionFactor(Constants.kMotorRotationsToMeters);
     m_rightEncoder.setPositionConversionFactor(Constants.kMotorRotationsToMeters);
@@ -160,8 +160,8 @@ public class Drive extends SubsystemBase {
                 () -> {
                   double desiredTurnCounterClockwise = startingAngle + 15;
                   double desiredTurnClockwise = startingAngle - 15;
-                  turnToAngleCommand(desiredTurnCounterClockwise);
-                  turnToAngleCommand(desiredTurnClockwise);
+                  turnToAbsoluteAngleCommand(desiredTurnCounterClockwise);
+                  turnToAbsoluteAngleCommand(desiredTurnClockwise);
                 }))
         .until(() -> m_shimmyTimer.hasElapsed(0.5));
   }
@@ -181,12 +181,12 @@ public class Drive extends SubsystemBase {
     // Subsystem::RunOnce implicitly requires `this` subsystem.
     return run(
         () -> {
-          m_tiltPID.setSetpoint(setPoint);
+          m_balancePID.setSetpoint(setPoint);
           double beginningRoll = m_navX.getRoll();
-          double motorCommand = MathUtil.clamp(m_tiltPID.calculate(beginningRoll), -0.25, 0.25);
+          double motorCommand = MathUtil.clamp(m_balancePID.calculate(beginningRoll), -0.25, 0.25);
           double leftPower = motorCommand;
           double rightPower = motorCommand;
-          DifferentialDrive.WheelSpeeds spds = DifferentialDrive.tankDriveIK(rightPower, leftPower, true);
+          DifferentialDrive.WheelSpeeds spds = DifferentialDrive.tankDriveIK(rightPower, leftPower, false);
           // m_drive.tankDrive(rightPower,leftPower);
           m_leftMotors.set(spds.left);
           m_rightMotors.set(spds.right);
@@ -310,7 +310,7 @@ public class Drive extends SubsystemBase {
 
   }
 
-  public CommandBase turnToAngleCommand(double angleDegrees) {
+  public CommandBase turnToAbsoluteAngleCommand(double angleDegrees) {
     return runOnce(
         () -> {
           System.out.println("starting turn to angle command");
@@ -322,7 +322,40 @@ public class Drive extends SubsystemBase {
                   m_turnPID.setSetpoint(angleDegrees);
                   double beginningAngle = -m_navX.getAngle();
                   double angleCommand = MathUtil.clamp(m_turnPID.calculate(beginningAngle), -0.2, 0.2);
+                  double leftPower = -angleCommand;
+                  double rightPower = angleCommand;
+                  setMotorSpeeds(leftPower, rightPower);
+                })
+                .until(() -> m_turnPID.atSetpoint())
+                .finallyDo(interrupted -> {
+                  m_leftMotors.stopMotor();
+                  m_rightMotors.stopMotor();
+                })
+                );
 
+  }
+
+  public CommandBase zeroYawCommand (){
+    return runOnce (
+      () -> {
+        m_navX.zeroYaw();
+      }
+    );
+  }
+
+  public CommandBase turnToRelativeAngleCommand(double angleDegrees) {
+    return runOnce(
+        () -> {
+          System.out.println("starting turn to angle command");
+          m_turnPID.reset();
+          m_turnPID.setSetpoint(angleDegrees - m_navX.getAngle());
+        }).beforeStarting(
+            run(
+                () -> {
+                  m_turnPID.setSetpoint(angleDegrees);
+                  m_navX.zeroYaw();
+                  double beginningAngle = -m_navX.getAngle();
+                  double angleCommand = MathUtil.clamp(m_turnPID.calculate(beginningAngle), -0.2, 0.2);
                   double leftPower = -angleCommand;
                   double rightPower = angleCommand;
                   setMotorSpeeds(leftPower, rightPower);
