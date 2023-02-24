@@ -39,7 +39,7 @@ public class Intake extends SubsystemBase {
   private RelativeEncoder m_tiltEncoder;
   private Timer m_intakeTimer;
   private Timer m_autonTimer;
-  private RelativeEncoder m_shootEncoder;
+  // private RelativeEncoder m_shootEncoder;
   //private SparkMaxPIDController m_IntegratedtiltPID;
   private PIDController m_tiltPID;
   private SparkMaxPIDController m_shootPID;
@@ -50,7 +50,7 @@ public class Intake extends SubsystemBase {
 
   public Intake() {
     m_tiltEncoder = m_tiltMotor.getEncoder();
-    m_shootEncoder = m_shootMotor.getEncoder();
+    // m_shootEncoder = m_shootMotor.getEncoder();
     //m_IntegratedtiltPID = m_tiltMotor.getPIDController();
     m_tiltPID = new PIDController(0.05, 0.0, 0.0);
 
@@ -59,7 +59,7 @@ public class Intake extends SubsystemBase {
     //m_IntegratedtiltPID.setFeedbackDevice(m_tiltEncoder);
     m_tiltShaftEncoder.setInverted(true);
     m_tiltShaftEncoder.setPositionConversionFactor(360.0);
-    m_tiltShaftEncoder.setPosition(0);
+    m_tiltShaftEncoder.setPosition(Constants.kTiltFullyRetractedAngleDegrees);
     // m_tiltPID.setFeedbackDevice(m_tiltShaftEncoder);
     // BE() CAREFUL WITH ALTERNATE ENCODER m_tiltMotor.restoreFactoryDefaults(); BE
     // CAREFUL WITH ALTERNATE ENCODER()
@@ -123,6 +123,50 @@ public class Intake extends SubsystemBase {
         });
   }
 
+  public CommandBase shootHighCommand() {
+    // Inline construction of command goes here.
+    // Subsystem::RunOnce implicitly requires `this` subsystem.
+    double power = Constants.kHighShotMotorPower;
+    double timeout = Constants.kShootingTimeOut;
+    return runOnce(
+        () -> {
+          m_autonTimer.reset();
+          m_autonTimer.start();
+
+        }).beforeStarting(run(
+            () -> {
+              if (shooterIRisTriggered() && power > 0 && m_intakeTimer.hasElapsed(0.05)) {
+                m_shootMotor.set(0);
+              } else {
+                m_shootMotor.set(power);
+              }
+            }))
+        .withTimeout(timeout)
+        .finallyDo((interrupted) -> m_shootMotor.set(0));
+  }
+
+  public CommandBase shootMidCommand() {
+    // Inline construction of command goes here.
+    // Subsystem::RunOnce implicitly requires `this` subsystem.
+    double power = Constants.kMidShotMotorPower;
+    double timeout = Constants.kShootingTimeOut;
+    return runOnce(
+        () -> {
+          m_autonTimer.reset();
+          m_autonTimer.start();
+
+        }).beforeStarting(run(
+            () -> {
+              if (shooterIRisTriggered() && power > 0 && m_intakeTimer.hasElapsed(0.05)) {
+                m_shootMotor.set(0);
+              } else {
+                m_shootMotor.set(power);
+              }
+            }))
+        .withTimeout(timeout)
+        .finallyDo((interrupted) -> m_shootMotor.set(0));
+  }
+
   public CommandBase tiltDoNothingCommand() {
     // Inline construction of command goes here.
     // Subsystem::RunOnce implicitly requires `this` subsystem.
@@ -134,8 +178,8 @@ public class Intake extends SubsystemBase {
 
   public void setTiltMotorPositionToZero() {
     m_tiltShaftEncoder.setInverted(true);
-    m_tiltShaftEncoder.setPosition(150.0);
     m_tiltShaftEncoder.setPositionConversionFactor(360.0);
+    m_tiltShaftEncoder.setPosition(Constants.kTiltFullyRetractedAngleDegrees);
   }
 
   public CommandBase zeroTiltMotorEncoderCommand() {
@@ -143,7 +187,7 @@ public class Intake extends SubsystemBase {
     // Subsystem::RunOnce implicitly requires `this` subsystem.
     return runOnce(
         () -> {
-          m_tiltEncoder.setPosition(0.0);
+          zeroTiltMotor();
         });
   }
 
@@ -203,6 +247,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void zeroTiltMotor() {
+    m_tiltShaftEncoder.setPosition(Constants.kTiltFullyRetractedAngleDegrees);
     m_tiltEncoder.setPosition(0.0);
   }
 

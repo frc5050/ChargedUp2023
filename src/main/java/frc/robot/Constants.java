@@ -43,11 +43,15 @@ public final class Constants {
     public static final double kMotorRotationsToMeters = kMotorRotationsPerWheelRotations / kMetersToWheelRotations;
     public static final double kVelocityConversionFactor = (1.0/60.0) * kMotorRotationsToMeters;
     public static final int kSolenoidChannel = 5;
-    public static final double kStraightP = 0.2;
+    public static final double kStraightP = 0.6;
+    public static final double kBalancingAutonTimAccel = 0.6;
+    public static final double kNavXRollOffset = -3.0;
+    public static final double kBalanceTolerance = 5;
+    public static final double kBalanceFeedForward = 0.01;
 
     //shooting
     public static final double kShootingTimeOut = 1.0;
-    public static final double kHighShotMotorPower = -0.9;
+    public static final double kHighShotMotorPower = -0.85;
     public static final double kMidShotMotorPower = -0.5;
   
 
@@ -62,6 +66,10 @@ public final class Constants {
     public static final double kTiltConePickUpHumanPlayerPosition = -20.0;
     public static final double kTiltConeHighPositionDegrees = 20;
     public static final double kTiltVoltageCompensation = 10.0; 
+    public static final double kConeOuttakeMotorPower = -1.0;
+    public static final double kTiltMotorInMotorPower = 0.5;
+    public static final double kTiltMotorOutMotorPower = -0.5;
+    public static final double kTiltFullyRetractedAngleDegrees = 150.0;
 
 
     //elevator
@@ -70,5 +78,6 @@ public final class Constants {
     public static final double kElevatorHighPosition = -126.58;
     public static final double kElevatorMiddlePosition = -96;
     public static final double kElevatorDownPosition = 0.0;
+    public static final double kElevatorTolerance = 0.15;
 
 }

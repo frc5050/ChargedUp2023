@@ -111,8 +111,8 @@ public class Drive extends SubsystemBase {
 
     m_turnPID.setTolerance(2.0, 0.5);
 
-    m_balancePID = new PIDController(0.0023, 0, 0);
-    m_balancePID.setTolerance(7);
+    m_balancePID = new PIDController(0.003, 0, 0.0);
+    m_balancePID.setTolerance(Constants.kBalanceTolerance);
 
     m_leftEncoder.setPositionConversionFactor(Constants.kMotorRotationsToMeters);
     m_rightEncoder.setPositionConversionFactor(Constants.kMotorRotationsToMeters);
@@ -184,12 +184,19 @@ public class Drive extends SubsystemBase {
           m_balancePID.setSetpoint(setPoint);
           double beginningRoll = m_navX.getRoll();
           double motorCommand = MathUtil.clamp(m_balancePID.calculate(beginningRoll), -0.25, 0.25);
+          motorCommand = motorCommand + Math.copySign(Constants.kBalanceFeedForward, motorCommand);
           double leftPower = motorCommand;
           double rightPower = motorCommand;
+          if (m_balancePID.atSetpoint()){
+            leftPower = 0.0;
+            rightPower = 0.0;
+          }
           DifferentialDrive.WheelSpeeds spds = DifferentialDrive.tankDriveIK(rightPower, leftPower, false);
           // m_drive.tankDrive(rightPower,leftPower);
           m_leftMotors.set(spds.left);
           m_rightMotors.set(spds.right);
+
+
         });
   }
 
@@ -238,6 +245,7 @@ public class Drive extends SubsystemBase {
     SmartDashboard.putNumber("Right Velocity", m_rightEncoder.getVelocity());
     SmartDashboard.putNumber("Velocity Ratio", m_leftEncoder.getVelocity() / m_rightEncoder.getVelocity());
     SmartDashboard.putNumber("Angle", m_navX.getAngle());
+    SmartDashboard.putNumber("Roll", m_navX.getRoll());
   }
 
   @Override
@@ -253,14 +261,14 @@ public class Drive extends SubsystemBase {
 
 
 
-  public CommandBase driveDistanceCommand(double distanceMeters, double timSpeed, double rotation) {
+  public CommandBase driveDistanceCommand(double distanceMeters, double timSpeed, double rotation, double timAccel) {
     // double speed = m_driveStraightPID.calculate(speed, rotation)
     return runOnce(
         () -> {
           lStartingPosition = m_leftEncoder.getPosition();
           m_driveStraightPID.reset(lStartingPosition);
-          m_driveStraightPID.setConstraints(new TrapezoidProfile.Constraints(Math.abs(timSpeed), 0.3));
-          m_driveStraightPID.setTolerance(0.05, 0.2);
+          m_driveStraightPID.setConstraints(new TrapezoidProfile.Constraints(Math.abs(timSpeed), timAccel));
+          m_driveStraightPID.setTolerance(0.1, 0.2);
           adjustedDistanceMeters = lStartingPosition + distanceMeters;
           m_driveStraightPID.setGoal(adjustedDistanceMeters);
           System.out.println("starting drive distance command" + adjustedDistanceMeters);
@@ -285,12 +293,16 @@ public class Drive extends SubsystemBase {
               System.out.println("left position: " + lStartingPosition);
 
               System.out.println("desired change: " + desiredChange);
+              SmartDashboard.putNumber("Desired Change", desiredChange);
               System.out.println("current change: " + currentChange);
               currentChange = currentPosition - lStartingPosition;
               System.out.println("Speed: " + speed);
               System.out.println("Current Position: " + currentPosition);
+              SmartDashboard.putNumber("Current Position", currentPosition);
               System.out.println("Adjusted Distance (Goal): " + adjustedDistanceMeters);
+              SmartDashboard.putNumber("Drive Distance Goal", adjustedDistanceMeters);
               System.out.println("Error:" + m_driveStraightPID.getPositionError());
+              SmartDashboard.putNumber("Error", m_driveStraightPID.getPositionError());
               arcadeDrive(speed, rotation, false);
             })
                 // End command when we've traveled the specified distance
@@ -309,6 +321,12 @@ public class Drive extends SubsystemBase {
     );
 
   }
+
+  public CommandBase driveDistanceCommand(double distanceMeters, double timSpeed, double rotation) {
+    return driveDistanceCommand(distanceMeters, timSpeed, rotation, 0.3);
+  }
+
+
 
   public CommandBase turnToAbsoluteAngleCommand(double angleDegrees) {
     return runOnce(

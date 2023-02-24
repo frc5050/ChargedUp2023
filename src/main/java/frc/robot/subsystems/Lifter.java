@@ -25,7 +25,7 @@ public class Lifter extends SubsystemBase {
   private CANSparkMax m_elevatorMotor = new CANSparkMax(Constants.kElevatorCANID, MotorType.kBrushless);
   private CANSparkMax m_ConeIntakeMotor = new CANSparkMax(Constants.kConeIntakeCANID, MotorType.kBrushless);
   private RelativeEncoder m_elevatorEncoder;
-  private SparkMaxPIDController m_elevatorPID; 
+  private SparkMaxPIDController m_elevatorPID;
   private final Timer m_ZeroingTimer;
 
   public Lifter() {
@@ -44,29 +44,25 @@ public class Lifter extends SubsystemBase {
     setSoftLimits();
   }
 
-
-
-
-  public void setSoftLimits(){
+  public void setSoftLimits() {
     m_elevatorMotor.setSoftLimit(SoftLimitDirection.kReverse, Constants.kElevatorTopSoftLimit);
-     m_elevatorMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
-     m_elevatorMotor.setSoftLimit(SoftLimitDirection.kForward, Constants.kElevatorBottomSoftLimit);
-     m_elevatorMotor.enableSoftLimit(SoftLimitDirection.kForward, true); 
+    m_elevatorMotor.enableSoftLimit(SoftLimitDirection.kReverse, true);
+    m_elevatorMotor.setSoftLimit(SoftLimitDirection.kForward, Constants.kElevatorBottomSoftLimit);
+    m_elevatorMotor.enableSoftLimit(SoftLimitDirection.kForward, true);
 
   }
 
-  public void startZeroing(){
+  public void startZeroing() {
     m_ZeroingTimer.reset();
     m_ZeroingTimer.start();
   }
 
-  public void zeroing(){
-    boolean extendZeroed = 
-      (m_elevatorEncoder.getVelocity() < 0.0001
-      && m_ZeroingTimer.hasElapsed(0.3));
-      if(extendZeroed){
-        m_elevatorEncoder.setPosition(0.0);
-      }
+  public void zeroing() {
+    boolean extendZeroed = (m_elevatorEncoder.getVelocity() < 0.0001
+        && m_ZeroingTimer.hasElapsed(0.3));
+    if (extendZeroed) {
+      m_elevatorEncoder.setPosition(0.0);
+    }
   }
 
   /**
@@ -83,7 +79,6 @@ public class Lifter extends SubsystemBase {
         });
   }
 
-
   public CommandBase elevatorDoNothingCommand() {
     return run(
         () -> {
@@ -94,28 +89,41 @@ public class Lifter extends SubsystemBase {
   public CommandBase coneIntakeCommand(double power) {
     return run(
         () -> {
-          m_ConeIntakeMotor.set( power);        });
-      }
+          m_ConeIntakeMotor.set(power);
+          System.out.println("outtaking");
+        });
+  }
 
   public CommandBase runElevatorCommand(double power) {
-  // Inline construction of command goes here.
-  // Subsystem::RunOnce implicitly requires `this` subsystem.
+    // Inline construction of command goes here.
+    // Subsystem::RunOnce implicitly requires `this` subsystem.
     return run(
         () -> {
           m_elevatorMotor.set(power);
         });
-      }   
-      
-      
-    public CommandBase elevatorPIDCommand(double position){
-      return run(
+  }
+
+  public CommandBase elevatorPIDCommand(double position) {
+    return run(
         () -> {
-         m_elevatorPID.setReference(position, ControlType.kPosition);
+          m_elevatorPID.setReference(position, ControlType.kPosition);
         });
-    }
+  }
+
+  public CommandBase elevatorPIDAutonCommand(double position) {
+    return run(
+        () -> {
+          m_elevatorPID.setReference(position, ControlType.kPosition);
+        }).until(
+            () -> { 
+              System.out.println("elevator until: " + Math.abs(m_elevatorEncoder.getPosition() - position));
+              return Math.abs(m_elevatorEncoder.getPosition() - position) <= Constants.kElevatorTolerance;
+  });
+  }
 
   /**
-   * An example method querying a boolean state of the subsystem (for example, a digital sensor).
+   * An example method querying a boolean state of the subsystem (for example, a
+   * digital sensor).
    *
    * @return value of some boolean subsystem state, such as a digital sensor.
    */
@@ -123,11 +131,12 @@ public class Lifter extends SubsystemBase {
     // Query some boolean state, such as a digital sensor.
     return false;
   }
-  //commented out on sydneys request
+
+  // commented out on sydneys request
   @Override
   public void periodic() {
     SmartDashboard.putNumber("elevator position", m_elevatorEncoder.getPosition());
- }
+  }
 
   @Override
   public void simulationPeriodic() {

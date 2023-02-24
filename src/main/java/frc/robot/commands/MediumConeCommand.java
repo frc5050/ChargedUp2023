@@ -13,7 +13,7 @@ public class MediumConeCommand extends CommandBase {
     public static Command MediumConeConfigurationCommand (Intake intake, Lifter lifter){
         return Commands.parallel(
             intake.tiltToDegreesCommand(Constants.kMidConePosition), 
-            lifter.elevatorPIDCommand(Constants.kElevatorMiddlePosition));
+            lifter.elevatorPIDAutonCommand(Constants.kElevatorMiddlePosition));
 
      
     }

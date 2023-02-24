@@ -7,7 +7,8 @@ package frc.robot;
 import frc.robot.Constants;
 import frc.robot.autos.DriveAuto;
 import frc.robot.autos.LongSideStartRetrieveAndPark;
-import frc.robot.autos.MiddleStartAndPark;
+import frc.robot.autos.MiddleStartConeAndPark;
+import frc.robot.autos.MiddleStartCubeAndPark;
 import frc.robot.autos.PickUpCube;
 import frc.robot.autos.SideStartAndPark;
 import frc.robot.autos.SideStartNeverGiveUp;
@@ -103,9 +104,9 @@ public class RobotContainer {
     //m_joystick.button(8).whileFalse(m_drive.setBrakeUpCommand());
 
     //tilt 
-    m_driverController.povUp().whileTrue(m_intake.runTiltMotorCommand(-0.5));
+    m_driverController.povUp().whileTrue(m_intake.runTiltMotorCommand(Constants.kTiltMotorOutMotorPower));
     m_driverController.povCenter().whileTrue(m_intake.runTiltMotorCommand(0.0));
-    m_driverController.povDown().whileTrue(m_intake.runTiltMotorCommand(0.5));
+    m_driverController.povDown().whileTrue(m_intake.runTiltMotorCommand(Constants.kTiltMotorInMotorPower));
 
     // runTi
     m_intake.setDefaultCommand(
@@ -155,7 +156,7 @@ public class RobotContainer {
      m_driverController.a().whileFalse(m_lifter.coneIntakeCommand(0.0));
 
     // //and cone outtake
-     m_driverController.y().whileTrue(m_lifter.coneIntakeCommand(-1.0));
+     m_driverController.y().whileTrue(m_lifter.coneIntakeCommand(Constants.kConeOuttakeMotorPower));
      m_driverController.y().whileFalse(m_lifter.coneIntakeCommand(0.0));
 
     // //elevator down
@@ -219,8 +220,9 @@ public class RobotContainer {
     // An example command will be run in autonomous
     return 
     //TestAuto.middleStartAndParkCommand(m_drive, m_intake);
-    SideStartNeverGiveUp.sideStartNeverGiveUpCommand(m_drive, m_intake, m_brake);
-    //MiddleStartAndPark.middleStartAndParkCommand(m_drive, m_intake);
+    //SideStartNeverGiveUp.sideStartNeverGiveUpCommand(m_drive, m_intake, m_brake);
+   // MiddleStartCubeAndPark.middleStartAndParkCommand(m_drive, m_intake);
+    MiddleStartConeAndPark.middleStartAndParkCommand(m_drive, m_intake, m_lifter);
     //SideStartRetrieveAndPark.sideStartRetrieveAndParkCommand(m_drive, m_intake);
   }
 }

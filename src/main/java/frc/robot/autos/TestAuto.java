@@ -14,7 +14,7 @@ public class TestAuto extends CommandBase{
             intake.runShootMotorCommandUntil(Constants.kHighShotMotorPower, Constants.kShootingTimeOut),
             drive.driveDistanceCommand(-4, -0.5, 0.0),
             drive.driveDistanceCommand(2, 0.5, 0.0),
-            drive.balanceRollCommand(0)
+            drive.balanceRollCommand(Constants.kNavXRollOffset)
             //drive.controlBrakeCommand(false)
         );
     }
