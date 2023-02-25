@@ -56,6 +56,7 @@ public class Robot extends TimedRobot {
 
   }
 
+
   @Override
   public void disabledPeriodic() {}
 
@@ -63,7 +64,6 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-    m_robotContainer.m_intake.setTiltMotorPositionToZero();
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {

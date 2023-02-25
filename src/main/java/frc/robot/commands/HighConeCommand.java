@@ -6,12 +6,13 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lifter;
+import frc.robot.subsystems.Tilt;
 
 public class HighConeCommand extends CommandBase {
 
 //High cone on button :)
-    public static Command HighConeConfigurationCommand (Intake intake, Lifter lifter){
-        return Commands.parallel(intake.tiltToDegreesCommand(Constants.kTiltConeHighPositionDegrees), 
+    public static Command HighConeConfigurationCommand (Tilt tilt, Lifter lifter){
+        return Commands.parallel(tilt.tiltToDegreesCommand(Constants.kTiltConeHighPositionDegrees, false), 
         lifter.elevatorPIDAutonCommand(Constants.kElevatorHighPosition));
 
      

@@ -7,15 +7,16 @@ import frc.robot.Constants;
 import frc.robot.commands.AutoStartUpCommand;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Tilt;
 
-public class MiddleStartCubeAndPark extends CommandBase{
+public class MiddleStartCubeAndPark{
 
-    public static Command middleStartAndParkCommand(Drive drive, Intake intake){
+    public static Command middleStartAndParkCommand(Drive drive, Intake intake, Tilt tilt){
         return Commands.sequence(
-            AutoStartUpCommand.AutoStartUp(intake, drive),
+            AutoStartUpCommand.AutoStartUp(tilt, drive),
             intake.runShootMotorCommandUntil(Constants.kHighShotMotorPower, Constants.kShootingTimeOut),
-            drive.driveDistanceCommand(-3.5, 0.75, 0.0),
-            drive.driveDistanceCommand(1.25, 0.75, 0.0),
+            drive.driveDistanceCommand(Constants.kDistanceOverStation, 0.8, 0.0, Constants.kBalancingAutonTimAccel, 0.4),
+            drive.driveDistanceCommand(Constants.kDistanceBackToStation, 1.0, 0.0, Constants.kDriveTimAccel, 0.2),
             drive.balanceRollCommand(Constants.kNavXRollOffset)
             //drive.controlBrakeCommand(false)
 

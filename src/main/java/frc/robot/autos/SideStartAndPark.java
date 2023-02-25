@@ -8,16 +8,17 @@ import frc.robot.commands.AutoStartUpCommand;
 import frc.robot.subsystems.Brake;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Tilt;
 
 public class SideStartAndPark extends CommandBase{
 
     //unfinished
 
-    public static Command sideStartAndParkCommand(Drive drive, Intake intake, Brake brake) {
+    public static Command sideStartAndParkCommand(Drive drive, Intake intake, Brake brake, Tilt tilt) {
         drive.resetNavX();
         return Commands.sequence(
-            AutoStartUpCommand.AutoStartUp(intake, drive),
-            intake.zeroTiltMotorCommand(),  
+            AutoStartUpCommand.AutoStartUp(tilt, drive),
+            tilt.zeroTiltMotorCommand(),  
             drive.zeroDriveEncoderCommand(),
             brake.setBrakeUpCommand(),
             intake.runShootMotorCommandUntil(-1.0, Constants.kShootingTimeOut), 

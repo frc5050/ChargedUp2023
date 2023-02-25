@@ -5,14 +5,14 @@
 package frc.robot;
 
 import frc.robot.Constants;
+import frc.robot.autos.DoStartUpTasks;
 import frc.robot.autos.DriveAuto;
 import frc.robot.autos.LongSideStartRetrieveAndPark;
 import frc.robot.autos.MiddleStartConeAndPark;
 import frc.robot.autos.MiddleStartCubeAndPark;
-import frc.robot.autos.PickUpCube;
 import frc.robot.autos.SideStartAndPark;
-import frc.robot.autos.SideStartNeverGiveUp;
-import frc.robot.autos.TestAuto;
+import frc.robot.autos.SideStartPlaceConeNeverGiveUp;
+import frc.robot.autos.SideStartShootCubeNeverGiveUp;
 import frc.robot.autos.doNothing;
 import frc.robot.autos.zeroTest;
 import frc.robot.commands.ExampleCommand;
@@ -24,9 +24,12 @@ import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lifter;
+import frc.robot.subsystems.Tilt;
+
 import com.revrobotics.CANSparkMax.ControlType;
 
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -48,8 +51,16 @@ public class RobotContainer {
   public static DriveAuto m_autos = new DriveAuto();
   public Lifter m_lifter = new Lifter();
   public Brake m_brake = new Brake();
+  public Tilt m_tilt = new Tilt();
   CommandJoystick m_joystick = new CommandJoystick(1);
 
+  private final Command m_middleStartConeAndPark = MiddleStartConeAndPark.middleStartAndParkCommand(m_drive, m_intake, m_lifter, m_tilt);
+  private final Command m_middleStartCubeAndPark = MiddleStartCubeAndPark.middleStartAndParkCommand(m_drive, m_intake, m_tilt);
+  private final Command m_doNothing = doNothing.doNothingCommand();
+  private final Command m_doStartUpTasks = DoStartUpTasks.doStartUpTasksCommand(m_tilt, m_drive);
+  private final Command m_sideStartPlaceConeNeverGiveUp = SideStartPlaceConeNeverGiveUp.sideStartNeverGiveUpCommand(m_drive, m_intake, m_brake, m_tilt, m_lifter);
+  private final Command m_sideStartShootCubeNeverGiveUp = SideStartShootCubeNeverGiveUp.sideStartNeverGiveUpCommand(m_drive, m_intake, m_brake, m_tilt);
+  SendableChooser<Command> m_chooser = new SendableChooser<>();
 
   public void periodic(){
     m_intake.m_Solenoid.set(true);
@@ -65,8 +76,20 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
     SmartDashboard.putData(m_drive);
+
+
+    m_chooser.setDefaultOption("Default", m_doStartUpTasks );
+    m_chooser.addOption("MiddleStartCubeAndPark", m_middleStartCubeAndPark);
+    m_chooser.addOption("MiddleStartConeAndPark", m_middleStartConeAndPark);
+    m_chooser.addOption("SideStartPlaceConeNeverGiveUp", m_sideStartPlaceConeNeverGiveUp);
+    m_chooser.addOption("SideStartShootCubeNeverGiveUp", m_sideStartShootCubeNeverGiveUp);
+    m_chooser.addOption("DoNothing", m_doNothing);
+    SmartDashboard.putData(m_chooser);
+
+
   }
 
+ 
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
@@ -89,28 +112,30 @@ public class RobotContainer {
             m_drive.arcadeDriveCommand(
           () -> -m_joystick.getY(), () -> -m_joystick.getX()));  
 
-    m_intake.setDefaultCommand(m_intake.tiltDoNothingCommand());
+    m_intake.setDefaultCommand(m_intake.intakeDoNothingCommand());
 
     m_brake.setDefaultCommand(m_brake.setBrakeCommand(m_joystick.button(8)));
 
-    m_intake.setDefaultCommand(m_intake.runTiltMotorCommand(() -> m_driverController.getLeftY()));
+    //m_tilt.setDefaultCommand(m_tilt.runTiltMotorCommand(() -> m_driverController.getLeftY()));
+
+
 
   
     
 
-    m_lifter.setDefaultCommand(m_lifter.elevatorDoNothingCommand());
+    m_lifter.setDefaultCommand(m_lifter.lifterDoNothingCommand());
 
     //m_joystick.button(8).whileTrue(m_drive.setBrakeDownCommand());
     //m_joystick.button(8).whileFalse(m_drive.setBrakeUpCommand());
 
     //tilt 
-    m_driverController.povUp().whileTrue(m_intake.runTiltMotorCommand(Constants.kTiltMotorOutMotorPower));
-    m_driverController.povCenter().whileTrue(m_intake.runTiltMotorCommand(0.0));
-    m_driverController.povDown().whileTrue(m_intake.runTiltMotorCommand(Constants.kTiltMotorInMotorPower));
+    m_driverController.povUp().whileTrue(m_tilt.runTiltMotorCommand(Constants.kTiltMotorOutMotorPower));
+    m_driverController.povCenter().whileTrue(m_tilt.runTiltMotorCommand(0.0));
+    m_driverController.povDown().whileTrue(m_tilt.runTiltMotorCommand(Constants.kTiltMotorInMotorPower));
 
     // runTi
-    m_intake.setDefaultCommand(
-      m_intake.runTiltMotorCommand(
+    m_tilt.setDefaultCommand(
+      m_tilt.runTiltMotorCommand(
     () -> {
       if (m_driverController.povDown().getAsBoolean() || m_driverController.povDownLeft().getAsBoolean() || m_driverController.povDownRight().getAsBoolean()) {
         return 0.5;
@@ -134,30 +159,21 @@ public class RobotContainer {
     //medium height shot
     m_joystick.button(5).whileTrue(m_intake.runShootMotorCommand(Constants.kMidShotMotorPower));
     m_joystick.button(5).whileFalse(m_intake.runShootMotorCommand(0.0));
-    //m_driverController.leftBumper().whileTrue(m_intake.runShootMotorCommandwithPID(-9000, ControlType.kVelocity));
-    //m_driverController.leftBumper().whileTrue(m_intake.shootPopCommand(true));
-    //m_driverController.leftBumper().whileFalse(m_intake.shootPopCommand(false));
+
 
 
     //high shot
     m_joystick.button(6).whileTrue(m_intake.runShootMotorCommand(Constants.kHighShotMotorPower));
     m_joystick.button(6).whileFalse(m_intake.runShootMotorCommand(0.0));
-    //m_driverController.rightBumper().whileTrue(m_intake.runShootMotorCommandwithPID(-14000, ControlType.kVelocity));
-    //m_driverController.rightBumper().whileTrue(m_intake.shootPopCommand(true));
-    //m_driverController.rightBumper().whileFalse(m_intake.shootPopCommand(false));
 
-
-    //shoot pneumatic (which we don't use anymore)
-    //m_driverController.leftTrigger().whileTrue(m_intake.shootPopCommand(true));
-    //m_driverController.leftTrigger().whileFalse(m_intake.shootPopCommand(false));
 
     // //cone intake
-     m_driverController.a().whileTrue(m_lifter.coneIntakeCommand(1.0));
-     m_driverController.a().whileFalse(m_lifter.coneIntakeCommand(0.0));
+     m_driverController.a().whileTrue(m_lifter.coneIntakeCommand());
+     m_driverController.a().whileFalse(m_lifter.getDefaultCommand());
 
     // //and cone outtake
-     m_driverController.y().whileTrue(m_lifter.coneIntakeCommand(Constants.kConeOuttakeMotorPower));
-     m_driverController.y().whileFalse(m_lifter.coneIntakeCommand(0.0));
+     m_driverController.y().whileTrue(m_lifter.coneOuttakeCommand(false));
+     m_driverController.y().whileFalse(m_lifter.getDefaultCommand());
 
     // //elevator down
      m_driverController.rightStick().whileTrue(m_lifter.runElevatorCommand(0.7));
@@ -165,8 +181,8 @@ public class RobotContainer {
 
     //tilt to position
     // TODO
-    // m_driverController.rightTrigger().whileTrue(m_intake.tiltToPositionCommand(Constants.kTiltConePickUpHumanPlayerPosition));
-    // m_driverController.rightTrigger().whileFalse(m_intake.getDefaultCommand());
+    m_driverController.rightTrigger().whileTrue(m_tilt.tiltToDegreesCommand(Constants.kTiltConePickUpHumanPlayerPosition, false));
+    m_driverController.rightTrigger().whileFalse(m_intake.getDefaultCommand());
    
 
     // //elevator up
@@ -181,22 +197,22 @@ public class RobotContainer {
     m_joystick.button(7).whileTrue(m_drive.balanceRollCommand(0.0));
     m_joystick.button(7).whileFalse(m_drive.getDefaultCommand());
 
-    m_joystick.button(12).whileTrue(m_intake.zeroTiltMotorCommand());
-    m_joystick.button(12).whileFalse(m_intake.getDefaultCommand());
+    m_joystick.button(12).whileTrue(m_tilt.zeroTiltMotorCommand());
+    m_joystick.button(12).whileFalse(m_tilt.getDefaultCommand());
 
-    m_joystick.button(10).whileTrue(HighConeCommand.HighConeConfigurationCommand(m_intake, m_lifter));
+    m_joystick.button(10).whileTrue(HighConeCommand.HighConeConfigurationCommand(m_tilt, m_lifter));
     m_joystick.button(10).whileFalse(m_lifter.getDefaultCommand());
 
-    m_joystick.button(9).whileTrue(MediumConeCommand.MediumConeConfigurationCommand(m_intake, m_lifter));
+    m_joystick.button(9).whileTrue(MediumConeCommand.MediumConeConfigurationCommand(m_tilt, m_lifter));
     m_joystick.button(9).whileFalse(m_lifter.getDefaultCommand());
 
-    m_joystick.button(11).whileTrue(m_lifter.elevatorPIDCommand(Constants.kElevatorDownPosition));
+    m_joystick.button(11).whileTrue(m_lifter.elevatorPIDTeleopCommand(Constants.kElevatorDownPosition));
     m_joystick.button(11).whileFalse(m_lifter.getDefaultCommand());
 
-    m_joystick.button(1).whileTrue(m_intake.tiltToDegreesCommand(90));
-    m_joystick.button(1).whileFalse(m_intake.getDefaultCommand());
-    m_joystick.button(2).whileTrue(m_intake.tiltToDegreesCommand(75));
-    m_joystick.button(2).whileFalse(m_intake.getDefaultCommand());
+    m_joystick.button(1).whileTrue(m_tilt.tiltToDegreesCommand(90, false));
+    m_joystick.button(1).whileFalse(m_tilt.getDefaultCommand());
+    m_joystick.button(2).whileTrue(m_tilt.tiltToDegreesCommand(75, false));
+    m_joystick.button(2).whileFalse(m_tilt.getDefaultCommand());
 
    
 
@@ -217,12 +233,8 @@ public class RobotContainer {
 
    //sendable chooser goes here to implement multiple autons 
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return 
-    //TestAuto.middleStartAndParkCommand(m_drive, m_intake);
-    //SideStartNeverGiveUp.sideStartNeverGiveUpCommand(m_drive, m_intake, m_brake);
-   // MiddleStartCubeAndPark.middleStartAndParkCommand(m_drive, m_intake);
-    MiddleStartConeAndPark.middleStartAndParkCommand(m_drive, m_intake, m_lifter);
-    //SideStartRetrieveAndPark.sideStartRetrieveAndParkCommand(m_drive, m_intake);
+
+    return m_chooser.getSelected();
+   
   }
 }

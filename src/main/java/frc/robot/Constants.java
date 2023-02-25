@@ -44,10 +44,16 @@ public final class Constants {
     public static final double kVelocityConversionFactor = (1.0/60.0) * kMotorRotationsToMeters;
     public static final int kSolenoidChannel = 5;
     public static final double kStraightP = 0.6;
+    public static final double kDriveDistanceTolerance = 0.1;
     public static final double kBalancingAutonTimAccel = 0.6;
+    public static final double kDriveTimAccel = 0.3;
     public static final double kNavXRollOffset = -3.0;
     public static final double kBalanceTolerance = 5;
     public static final double kBalanceFeedForward = 0.01;
+    public static final double kDistanceOverStation = -3.15;
+    public static final double kDistanceBackToStation = 1.25;
+    public static final double kTurnPIDPositionTolerance = 2.0;
+    public static final double kTurnPIDVelocityTolerance = 0.3;
 
     //shooting
     public static final double kShootingTimeOut = 1.0;
@@ -63,13 +69,16 @@ public final class Constants {
     public static final float kTiltInSoftLimit = -8;
     public static final double kMidConePosition = 10.0;
     public static final double kIntakeIRDelay = 0.03;
-    public static final double kTiltConePickUpHumanPlayerPosition = -20.0;
+    public static final double kTiltConePickUpHumanPlayerPosition = 45;
     public static final double kTiltConeHighPositionDegrees = 20;
     public static final double kTiltVoltageCompensation = 10.0; 
     public static final double kConeOuttakeMotorPower = -1.0;
+    public static final double kConeIntakeMotorPower = 1.0;
     public static final double kTiltMotorInMotorPower = 0.5;
     public static final double kTiltMotorOutMotorPower = -0.5;
     public static final double kTiltFullyRetractedAngleDegrees = 150.0;
+    public static final double kAutoReturnTiltTimeout = 0.5;
+    public static final double kIntakeTimeout = 1.0;
 
 
     //elevator
@@ -79,5 +88,6 @@ public final class Constants {
     public static final double kElevatorMiddlePosition = -96;
     public static final double kElevatorDownPosition = 0.0;
     public static final double kElevatorTolerance = 0.15;
+    public static final double kAutonHeightWait = 45;
 
 }

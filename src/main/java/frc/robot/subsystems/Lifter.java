@@ -65,6 +65,10 @@ public class Lifter extends SubsystemBase {
     }
   }
 
+  public boolean minimumHeightAcquired(double minimumHeight){
+    return Math.abs(m_elevatorEncoder.getPosition()) >= Math.abs(minimumHeight);
+  }
+
   /**
    * Example command factory method.
    *
@@ -79,19 +83,35 @@ public class Lifter extends SubsystemBase {
         });
   }
 
-  public CommandBase elevatorDoNothingCommand() {
+  public CommandBase lifterDoNothingCommand() {
     return run(
         () -> {
           m_elevatorMotor.set(0.0);
+          m_ConeIntakeMotor.set(0.0);
         });
   }
 
-  public CommandBase coneIntakeCommand(double power) {
+  public CommandBase coneIntakeCommand() {
     return run(
         () -> {
+          double power = Constants.kConeIntakeMotorPower;
           m_ConeIntakeMotor.set(power);
           System.out.println("outtaking");
         });
+  }
+
+  public CommandBase coneOuttakeCommand(boolean usetimeout) {
+    CommandBase out = run(
+        () -> {
+          double power = Constants.kConeOuttakeMotorPower;
+          m_ConeIntakeMotor.set(power);
+          System.out.println("outtaking");
+        });
+    if (usetimeout) {
+      out = out.withTimeout(0.5);
+    }
+    return out;
+
   }
 
   public CommandBase runElevatorCommand(double power) {
@@ -103,7 +123,7 @@ public class Lifter extends SubsystemBase {
         });
   }
 
-  public CommandBase elevatorPIDCommand(double position) {
+  public CommandBase elevatorPIDTeleopCommand(double position) {
     return run(
         () -> {
           m_elevatorPID.setReference(position, ControlType.kPosition);
@@ -115,10 +135,18 @@ public class Lifter extends SubsystemBase {
         () -> {
           m_elevatorPID.setReference(position, ControlType.kPosition);
         }).until(
-            () -> { 
+            () -> {
               System.out.println("elevator until: " + Math.abs(m_elevatorEncoder.getPosition() - position));
               return Math.abs(m_elevatorEncoder.getPosition() - position) <= Constants.kElevatorTolerance;
-  });
+            });
+  }
+
+  public CommandBase stopConeShooting(){
+    return runOnce(
+      () -> {
+        m_ConeIntakeMotor.stopMotor();
+      }
+    );
   }
 
   /**

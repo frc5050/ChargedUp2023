@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import frc.robot.Constants;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Tilt;
 
 import com.revrobotics.CANSparkMax;
 
@@ -15,7 +16,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 /** An example command that uses an example subsystem. */
 public class ZeroIntake extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Intake m_intake;
+  private final Tilt m_tilt;
   private Timer m_timer;
   private boolean wasRunningSlowly;
 
@@ -24,12 +25,12 @@ public class ZeroIntake extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ZeroIntake(Intake intake) {
-    m_intake = intake;
+  public ZeroIntake(Tilt tilt) {
+    m_tilt = tilt;
     wasRunningSlowly = false;
     m_timer = new Timer();
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(intake);
+    addRequirements(tilt);
   }
 
   // Called when the command is initially scheduled.
@@ -42,27 +43,26 @@ public class ZeroIntake extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_intake.isRunningSlowly() && !wasRunningSlowly){
+    if (m_tilt.isRunningSlowly() && !wasRunningSlowly){
       m_timer.reset();
       m_timer.start();
-    } else if (!m_intake.isRunningSlowly()){
+    } else if (!m_tilt.isRunningSlowly()){
       m_timer.stop();
     }
-    m_intake.setTiltMotorPower(Constants.kIntakeTiltZeroPower);
-    wasRunningSlowly = m_intake.isRunningSlowly();
+    m_tilt.setTiltMotorPower(Constants.kIntakeTiltZeroPower);
+    wasRunningSlowly = m_tilt.isRunningSlowly();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-      m_intake.setTiltMotorPower(0.0);
-      System.out.println(interrupted);
+      m_tilt.setTiltMotorPower(0.0);
+      System.out.println("ZeroIntake interrupted: " + interrupted);
       if (!interrupted){
-        m_intake.zeroTiltMotor();
-        m_intake.setSoftLimits();
-        System.out.println("tilt motor position: " + m_intake.getTiltMotorPosition());
-        System.out.println("tilt motor soft limit: " + m_intake.getTiltSoftLimit());
-
+        m_tilt.zeroTiltMotor();
+        m_tilt.setSoftLimits();
+        System.out.println("tilt motor position: " + m_tilt.getTiltMotorPosition());
+        System.out.println("tilt motor soft limit: " + m_tilt.getTiltSoftLimit());
       }
   }
 

@@ -4,14 +4,11 @@
 
 package frc.robot.subsystems;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
-import com.fasterxml.jackson.databind.deser.std.ContainerDeserializerBase;
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -19,25 +16,14 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.PneumaticHub;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
-import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
-import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.PIDController2;
-import frc.robot.ProfiledPIDController2;
 
 public class Drive extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
@@ -106,10 +92,10 @@ public class Drive extends SubsystemBase {
 
     m_driveStraightPID = new ProfiledPIDController(Constants.kStraightP, 0.0, 0.0,
         new TrapezoidProfile.Constraints(1, 0.3));
-    m_turnPID = new PIDController(0.02, 0, 0.0001);
+    m_turnPID = new PIDController(0.01, 0, 0.0);
     m_turnPID.enableContinuousInput(-180, 180);
 
-    m_turnPID.setTolerance(2.0, 0.5);
+    m_turnPID.setTolerance(Constants.kTurnPIDPositionTolerance, Constants.kTurnPIDVelocityTolerance);
 
     m_balancePID = new PIDController(0.003, 0, 0.0);
     m_balancePID.setTolerance(Constants.kBalanceTolerance);
@@ -261,14 +247,14 @@ public class Drive extends SubsystemBase {
 
 
 
-  public CommandBase driveDistanceCommand(double distanceMeters, double timSpeed, double rotation, double timAccel) {
+  public CommandBase driveDistanceCommand(double distanceMeters, double timSpeed, double rotation, double timAccel, double positionTolerance) {
     // double speed = m_driveStraightPID.calculate(speed, rotation)
     return runOnce(
         () -> {
           lStartingPosition = m_leftEncoder.getPosition();
           m_driveStraightPID.reset(lStartingPosition);
           m_driveStraightPID.setConstraints(new TrapezoidProfile.Constraints(Math.abs(timSpeed), timAccel));
-          m_driveStraightPID.setTolerance(0.1, 0.2);
+          m_driveStraightPID.setTolerance(positionTolerance, 0.2);
           adjustedDistanceMeters = lStartingPosition + distanceMeters;
           m_driveStraightPID.setGoal(adjustedDistanceMeters);
           System.out.println("starting drive distance command" + adjustedDistanceMeters);
@@ -323,7 +309,7 @@ public class Drive extends SubsystemBase {
   }
 
   public CommandBase driveDistanceCommand(double distanceMeters, double timSpeed, double rotation) {
-    return driveDistanceCommand(distanceMeters, timSpeed, rotation, 0.3);
+    return driveDistanceCommand(distanceMeters, timSpeed, rotation, Constants.kDriveTimAccel, Constants.kDriveDistanceTolerance);
   }
 
 
