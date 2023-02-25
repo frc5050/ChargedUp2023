@@ -7,7 +7,6 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMax.SoftLimitDirection;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxAlternateEncoder;
 
 import edu.wpi.first.math.MathUtil;

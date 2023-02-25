@@ -15,7 +15,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -55,8 +54,6 @@ public class Drive extends SubsystemBase {
       m_rightFront,
       m_rightRear,
       m_rightMiddle);
-
-  private final SimpleMotorFeedforward feedForward = new SimpleMotorFeedforward(0, 0);
 
   // private final DifferentialDrive m_drive = new DifferentialDrive(m_leftMotors,
   // m_rightMotors);

@@ -5,17 +5,13 @@
 package frc.robot.commands;
 
 import frc.robot.Constants;
-import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Tilt;
-
-import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** An example command that uses an example subsystem. */
 public class ZeroIntake extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Tilt m_tilt;
   private Timer m_timer;
   private boolean wasRunningSlowly;
