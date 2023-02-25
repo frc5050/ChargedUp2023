@@ -67,20 +67,6 @@ public class Lifter extends SubsystemBase {
     return Math.abs(m_elevatorEncoder.getPosition()) >= Math.abs(minimumHeight);
   }
 
-  /**
-   * Example command factory method.
-   *
-   * @return a command
-   */
-  public CommandBase exampleMethodCommand() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
-    return runOnce(
-        () -> {
-          /* one-time action goes here */
-        });
-  }
-
   public CommandBase lifterDoNothingCommand() {
     return run(
         () -> {

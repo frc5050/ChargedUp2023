@@ -109,24 +109,9 @@ public class Drive extends SubsystemBase {
     m_navX.reset();
   }
 
-  /**
-   * Example command factory method.
-   *
-   * @return a command
-   */
-
   // public void controlBrake(boolean solenoidState){
   // m_brakeSolenoid.set(solenoidState);
   // }
-
-  public CommandBase exampleMethodCommand() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
-    return runOnce(
-        () -> {
-          /* one-time action goes here */
-        });
-  }
 
   public CommandBase shimmyCommand() {
     // Inline construction of command goes here.
