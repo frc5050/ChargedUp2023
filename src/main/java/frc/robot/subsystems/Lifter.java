@@ -63,7 +63,7 @@ public class Lifter extends SubsystemBase {
     }
   }
 
-  public boolean minimumHeightAcquired(double minimumHeight){
+  public boolean minimumHeightAcquired(double minimumHeight) {
     return Math.abs(m_elevatorEncoder.getPosition()) >= Math.abs(minimumHeight);
   }
 
@@ -139,12 +139,11 @@ public class Lifter extends SubsystemBase {
             });
   }
 
-  public CommandBase stopConeShooting(){
+  public CommandBase stopConeShooting() {
     return runOnce(
-      () -> {
-        m_ConeIntakeMotor.stopMotor();
-      }
-    );
+        () -> {
+          m_ConeIntakeMotor.stopMotor();
+        });
   }
 
   /**

@@ -7,13 +7,9 @@ import frc.robot.subsystems.Tilt;
 
 public class DoStartUpTasks {
 
-   
-     
-        public static Command doStartUpTasksCommand(Tilt tilt, Drive drive){
-            return 
-                AutoStartUpCommand.AutoStartUp(tilt, drive);
-                
+        public static Command doStartUpTasksCommand(Tilt tilt, Drive drive) {
+                return AutoStartUpCommand.AutoStartUp(tilt, drive);
+
         }
-    
-    
+
 }

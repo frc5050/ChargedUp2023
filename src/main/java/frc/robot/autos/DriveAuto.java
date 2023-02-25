@@ -9,16 +9,15 @@ import frc.robot.subsystems.Intake;
 
 public class DriveAuto {
 
-    public static Command autoDriveCommand(Drive drive, Intake intake, Brake brake) {
-        intake.resetIntakeTimer();
-        return Commands.sequence(brake.setBrakeUpCommand(), 
-        intake.runShootMotorCommandUntil(-1, Constants.kShootingTimeOut), 
-        drive.driveDistanceCommand(2.5, -0.4, -0.1), 
+  public static Command autoDriveCommand(Drive drive, Intake intake, Brake brake) {
+    intake.resetIntakeTimer();
+    return Commands.sequence(brake.setBrakeUpCommand(),
+        intake.runShootMotorCommandUntil(-1, Constants.kShootingTimeOut),
+        drive.driveDistanceCommand(2.5, -0.4, -0.1),
         brake.setBrakeDownCommand());
-      }
+  }
 
-      public DriveAuto(){
-      }
-    
-    
+  public DriveAuto() {
+  }
+
 }

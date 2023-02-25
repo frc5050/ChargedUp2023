@@ -6,18 +6,11 @@ import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Tilt;
 
 public class AutoStartUpCommand {
-    
 
-    public static Command AutoStartUp (Tilt tilt,  Drive drive){
+    public static Command AutoStartUp(Tilt tilt, Drive drive) {
         return Commands.parallel(
-            drive.zeroYawCommand(),
-            tilt.zeroTiltMotorCommand()
-        );
+                drive.zeroYawCommand(),
+                tilt.zeroTiltMotorCommand());
 
-            
-        
-        
-
-     
     }
 }

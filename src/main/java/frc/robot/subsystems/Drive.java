@@ -170,7 +170,7 @@ public class Drive extends SubsystemBase {
           motorCommand = motorCommand + Math.copySign(Constants.kBalanceFeedForward, motorCommand);
           double leftPower = motorCommand;
           double rightPower = motorCommand;
-          if (m_balancePID.atSetpoint()){
+          if (m_balancePID.atSetpoint()) {
             leftPower = 0.0;
             rightPower = 0.0;
           }
@@ -179,12 +179,11 @@ public class Drive extends SubsystemBase {
           m_leftMotors.set(spds.left);
           m_rightMotors.set(spds.right);
 
-
         });
   }
 
   public void setMotorPower(double speed) {
-    setMotorSpeeds(speed/1.02, speed);
+    setMotorSpeeds(speed / 1.02, speed);
   }
 
   public void arcadeDrive(double fwd, double rot, boolean squareInputs) {
@@ -239,12 +238,13 @@ public class Drive extends SubsystemBase {
   // This command takes distance but it also Math.abs's it so the sign of speed
   // determines the direction rather than distance meters
 
-// driveDistanceStraightCommand(-5, 0.5, 0.0) => drive 5m backwards with max abs speed of 0.5 m/s
-// driveDistanceStraightCommand(+5, 0.5, 0.0) => drive 5m forwards with max abs speed of 0.5 m/s
+  // driveDistanceStraightCommand(-5, 0.5, 0.0) => drive 5m backwards with max abs
+  // speed of 0.5 m/s
+  // driveDistanceStraightCommand(+5, 0.5, 0.0) => drive 5m forwards with max abs
+  // speed of 0.5 m/s
 
-
-
-  public CommandBase driveDistanceCommand(double distanceMeters, double timSpeed, double rotation, double timAccel, double positionTolerance) {
+  public CommandBase driveDistanceCommand(double distanceMeters, double timSpeed, double rotation, double timAccel,
+      double positionTolerance) {
     // double speed = m_driveStraightPID.calculate(speed, rotation)
     return runOnce(
         () -> {
@@ -272,7 +272,7 @@ public class Drive extends SubsystemBase {
                 }
               }
               double speed = velocity / 2;
-              SmartDashboard.putNumber("Velocity over Speed", m_leftEncoder.getVelocity()/speed);
+              SmartDashboard.putNumber("Velocity over Speed", m_leftEncoder.getVelocity() / speed);
               System.out.println("left position: " + lStartingPosition);
 
               System.out.println("desired change: " + desiredChange);
@@ -290,10 +290,10 @@ public class Drive extends SubsystemBase {
             })
                 // End command when we've traveled the specified distance
                 .until(
-                  // () -> (currentChange / desiredChange) >= 1)
-                  () -> m_driveStraightPID.atGoal())
-                  //() -> m_driveStraightPID.atSetpoint())
-                  // Stop the drive when the command ends
+                    // () -> (currentChange / desiredChange) >= 1)
+                    () -> m_driveStraightPID.atGoal())
+                // () -> m_driveStraightPID.atSetpoint())
+                // Stop the drive when the command ends
                 .finallyDo(interrupted -> {
                   m_leftMotors.stopMotor();
                   m_rightMotors.stopMotor();
@@ -306,10 +306,9 @@ public class Drive extends SubsystemBase {
   }
 
   public CommandBase driveDistanceCommand(double distanceMeters, double timSpeed, double rotation) {
-    return driveDistanceCommand(distanceMeters, timSpeed, rotation, Constants.kDriveTimAccel, Constants.kDriveDistanceTolerance);
+    return driveDistanceCommand(distanceMeters, timSpeed, rotation, Constants.kDriveTimAccel,
+        Constants.kDriveDistanceTolerance);
   }
-
-
 
   public CommandBase turnToAbsoluteAngleCommand(double angleDegrees) {
     return runOnce(
@@ -331,17 +330,15 @@ public class Drive extends SubsystemBase {
                 .finallyDo(interrupted -> {
                   m_leftMotors.stopMotor();
                   m_rightMotors.stopMotor();
-                })
-                );
+                }));
 
   }
 
-  public CommandBase zeroYawCommand (){
-    return runOnce (
-      () -> {
-        m_navX.zeroYaw();
-      }
-    );
+  public CommandBase zeroYawCommand() {
+    return runOnce(
+        () -> {
+          m_navX.zeroYaw();
+        });
   }
 
   public CommandBase turnToRelativeAngleCommand(double angleDegrees) {
@@ -365,8 +362,7 @@ public class Drive extends SubsystemBase {
                 .finallyDo(interrupted -> {
                   m_leftMotors.stopMotor();
                   m_rightMotors.stopMotor();
-                })
-                );
+                }));
 
   }
 

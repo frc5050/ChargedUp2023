@@ -39,10 +39,10 @@ public class ZeroIntake extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_tilt.isRunningSlowly() && !wasRunningSlowly){
+    if (m_tilt.isRunningSlowly() && !wasRunningSlowly) {
       m_timer.reset();
       m_timer.start();
-    } else if (!m_tilt.isRunningSlowly()){
+    } else if (!m_tilt.isRunningSlowly()) {
       m_timer.stop();
     }
     m_tilt.setTiltMotorPower(Constants.kIntakeTiltZeroPower);
@@ -52,14 +52,14 @@ public class ZeroIntake extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-      m_tilt.setTiltMotorPower(0.0);
-      System.out.println("ZeroIntake interrupted: " + interrupted);
-      if (!interrupted){
-        m_tilt.zeroTiltMotor();
-        m_tilt.setSoftLimits();
-        System.out.println("tilt motor position: " + m_tilt.getTiltMotorPosition());
-        System.out.println("tilt motor soft limit: " + m_tilt.getTiltSoftLimit());
-      }
+    m_tilt.setTiltMotorPower(0.0);
+    System.out.println("ZeroIntake interrupted: " + interrupted);
+    if (!interrupted) {
+      m_tilt.zeroTiltMotor();
+      m_tilt.setSoftLimits();
+      System.out.println("tilt motor position: " + m_tilt.getTiltMotorPosition());
+      System.out.println("tilt motor soft limit: " + m_tilt.getTiltSoftLimit());
+    }
   }
 
   // Returns true when the command should end.
@@ -69,4 +69,3 @@ public class ZeroIntake extends CommandBase {
     return m_timer.hasElapsed(0.4);
   }
 }
- 

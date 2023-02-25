@@ -42,7 +42,8 @@ public class PIDController2 implements Sendable, AutoCloseable {
   private double m_positionError;
   private double m_velocityError;
 
-  // The error at the time of the second-most-recent call to calculate() (used to compute velocity)
+  // The error at the time of the second-most-recent call to calculate() (used to
+  // compute velocity)
   private double m_prevError;
 
   // The sum of the errors for use in the integral calc
@@ -59,7 +60,8 @@ public class PIDController2 implements Sendable, AutoCloseable {
   private boolean m_haveSetpoint;
 
   /**
-   * Allocates a PIDController with the given constants for kp, ki, and kd and a default period of
+   * Allocates a PIDController with the given constants for kp, ki, and kd and a
+   * default period of
    * 0.02 seconds.
    *
    * @param kp The proportional coefficient.
@@ -73,10 +75,11 @@ public class PIDController2 implements Sendable, AutoCloseable {
   /**
    * Allocates a PIDController with the given constants for kp, ki, and kd.
    *
-   * @param kp The proportional coefficient.
-   * @param ki The integral coefficient.
-   * @param kd The derivative coefficient.
-   * @param period The period between controller updates in seconds. Must be non-zero and positive.
+   * @param kp     The proportional coefficient.
+   * @param ki     The integral coefficient.
+   * @param kd     The derivative coefficient.
+   * @param period The period between controller updates in seconds. Must be
+   *               non-zero and positive.
    */
   public PIDController2(double kp, double ki, double kd, double period) {
     m_kp = kp;
@@ -102,7 +105,8 @@ public class PIDController2 implements Sendable, AutoCloseable {
   /**
    * Sets the PID Controller gain parameters.
    *
-   * <p>Set the proportional, integral, and differential coefficients.
+   * <p>
+   * Set the proportional, integral, and differential coefficients.
    *
    * @param kp The proportional coefficient.
    * @param ki The integral coefficient.
@@ -226,7 +230,8 @@ public class PIDController2 implements Sendable, AutoCloseable {
   /**
    * Returns true if the error is within the tolerance of the setpoint.
    *
-   * <p>This will return false until at least one input value has been computed.
+   * <p>
+   * This will return false until at least one input value has been computed.
    *
    * @return Whether the error is within the acceptable bounds.
    */
@@ -245,7 +250,9 @@ public class PIDController2 implements Sendable, AutoCloseable {
   /**
    * Enables continuous input.
    *
-   * <p>Rather then using the max and min input range as constraints, it considers them to be the
+   * <p>
+   * Rather then using the max and min input range as constraints, it considers
+   * them to be the
    * same point and automatically calculates the shortest route to the setpoint.
    *
    * @param minimumInput The minimum value expected from the input.
@@ -274,7 +281,9 @@ public class PIDController2 implements Sendable, AutoCloseable {
   /**
    * Sets the minimum and maximum values for the integrator.
    *
-   * <p>When the cap is reached, the integrator value is added to the controller output rather than
+   * <p>
+   * When the cap is reached, the integrator value is added to the controller
+   * output rather than
    * the integrator value times the integral gain.
    *
    * @param minimumIntegral The minimum value of the integrator.
@@ -327,7 +336,7 @@ public class PIDController2 implements Sendable, AutoCloseable {
    * Returns the next output of the PID controller.
    *
    * @param measurement The current measurement of the process variable.
-   * @param setpoint The new setpoint of the controller.
+   * @param setpoint    The new setpoint of the controller.
    * @return The next controller output.
    */
   public double calculate(double measurement, double setpoint) {
@@ -356,11 +365,10 @@ public class PIDController2 implements Sendable, AutoCloseable {
     m_velocityError = (m_positionError - m_prevError) / m_period;
 
     if (m_ki != 0) {
-      m_totalError =
-          MathUtil.clamp(
-              m_totalError + m_positionError * m_period,
-              m_minimumIntegral / m_ki,
-              m_maximumIntegral / m_ki);
+      m_totalError = MathUtil.clamp(
+          m_totalError + m_positionError * m_period,
+          m_minimumIntegral / m_ki,
+          m_maximumIntegral / m_ki);
     }
 
     return m_kp * m_positionError + m_ki * m_totalError + m_kd * m_velocityError;

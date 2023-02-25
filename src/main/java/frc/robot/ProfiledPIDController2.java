@@ -13,8 +13,10 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.util.sendable.SendableRegistry;
 
 /**
- * Implements a PID control loop whose setpoint is constrained by a trapezoid profile. Users should
- * call reset() when they first start running the controller to avoid unwanted behavior.
+ * Implements a PID control loop whose setpoint is constrained by a trapezoid
+ * profile. Users should
+ * call reset() when they first start running the controller to avoid unwanted
+ * behavior.
  */
 public class ProfiledPIDController2 implements Sendable {
   private static int instances;
@@ -27,11 +29,12 @@ public class ProfiledPIDController2 implements Sendable {
   private TrapezoidProfile.Constraints m_constraints;
 
   /**
-   * Allocates a ProfiledPIDController with the given constants for Kp, Ki, and Kd.
+   * Allocates a ProfiledPIDController with the given constants for Kp, Ki, and
+   * Kd.
    *
-   * @param Kp The proportional coefficient.
-   * @param Ki The integral coefficient.
-   * @param Kd The derivative coefficient.
+   * @param Kp          The proportional coefficient.
+   * @param Ki          The integral coefficient.
+   * @param Kd          The derivative coefficient.
    * @param constraints Velocity and acceleration constraints for goal.
    */
   public ProfiledPIDController2(
@@ -40,13 +43,15 @@ public class ProfiledPIDController2 implements Sendable {
   }
 
   /**
-   * Allocates a ProfiledPIDController with the given constants for Kp, Ki, and Kd.
+   * Allocates a ProfiledPIDController with the given constants for Kp, Ki, and
+   * Kd.
    *
-   * @param Kp The proportional coefficient.
-   * @param Ki The integral coefficient.
-   * @param Kd The derivative coefficient.
+   * @param Kp          The proportional coefficient.
+   * @param Ki          The integral coefficient.
+   * @param Kd          The derivative coefficient.
    * @param constraints Velocity and acceleration constraints for goal.
-   * @param period The period between controller updates in seconds. The default is 0.02 seconds.
+   * @param period      The period between controller updates in seconds. The
+   *                    default is 0.02 seconds.
    */
   public ProfiledPIDController2(
       double Kp, double Ki, double Kd, TrapezoidProfile.Constraints constraints, double period) {
@@ -61,7 +66,8 @@ public class ProfiledPIDController2 implements Sendable {
   /**
    * Sets the PID Controller gain parameters.
    *
-   * <p>Sets the proportional, integral, and differential coefficients.
+   * <p>
+   * Sets the proportional, integral, and differential coefficients.
    *
    * @param Kp Proportional coefficient
    * @param Ki Integral coefficient
@@ -182,7 +188,8 @@ public class ProfiledPIDController2 implements Sendable {
   /**
    * Returns true if the error is within the tolerance of the error.
    *
-   * <p>This will return false until at least one input value has been computed.
+   * <p>
+   * This will return false until at least one input value has been computed.
    *
    * @return True if the error is within the tolerance of the error.
    */
@@ -213,7 +220,8 @@ public class ProfiledPIDController2 implements Sendable {
   /**
    * Returns true if the error is within the tolerance of the error.
    *
-   * <p>This will return false until at least one input value has been computed.
+   * <p>
+   * This will return false until at least one input value has been computed.
    *
    * @return True if the error is within the tolerance of the error.
    */
@@ -224,7 +232,9 @@ public class ProfiledPIDController2 implements Sendable {
   /**
    * Enables continuous input.
    *
-   * <p>Rather then using the max and min input range as constraints, it considers them to be the
+   * <p>
+   * Rather then using the max and min input range as constraints, it considers
+   * them to be the
    * same point and automatically calculates the shortest route to the setpoint.
    *
    * @param minimumInput The minimum value expected from the input.
@@ -244,7 +254,9 @@ public class ProfiledPIDController2 implements Sendable {
   /**
    * Sets the minimum and maximum values for the integrator.
    *
-   * <p>When the cap is reached, the integrator value is added to the controller output rather than
+   * <p>
+   * When the cap is reached, the integrator value is added to the controller
+   * output rather than
    * the integrator value times the integral gain.
    *
    * @param minimumIntegral The minimum value of the integrator.
@@ -301,15 +313,17 @@ public class ProfiledPIDController2 implements Sendable {
     if (m_controller.isContinuousInputEnabled()) {
       // Get error which is the smallest distance between goal and measurement
       double errorBound = (m_maximumInput - m_minimumInput) / 2.0;
-      double goalMinDistance =
-          MathUtil.inputModulus(m_goal.position - measurement, -errorBound, errorBound);
-      double setpointMinDistance =
-          MathUtil.inputModulus(m_setpoint.position - measurement, -errorBound, errorBound);
+      double goalMinDistance = MathUtil.inputModulus(m_goal.position - measurement, -errorBound, errorBound);
+      double setpointMinDistance = MathUtil.inputModulus(m_setpoint.position - measurement, -errorBound, errorBound);
 
-      // Recompute the profile goal with the smallest error, thus giving the shortest path. The goal
-      // may be outside the input range after this operation, but that's OK because the controller
-      // will still go there and report an error of zero. In other words, the setpoint only needs to
-      // be offset from the measurement by the input range modulus; they don't need to be equal.
+      // Recompute the profile goal with the smallest error, thus giving the shortest
+      // path. The goal
+      // may be outside the input range after this operation, but that's OK because
+      // the controller
+      // will still go there and report an error of zero. In other words, the setpoint
+      // only needs to
+      // be offset from the measurement by the input range modulus; they don't need to
+      // be equal.
       m_goal.position = goalMinDistance + measurement;
       m_setpoint.position = setpointMinDistance + measurement;
     }
@@ -323,7 +337,7 @@ public class ProfiledPIDController2 implements Sendable {
    * Returns the next output of the PID controller.
    *
    * @param measurement The current measurement of the process variable.
-   * @param goal The new goal of the controller.
+   * @param goal        The new goal of the controller.
    * @return The controller's next output.
    */
   public double calculate(double measurement, TrapezoidProfile.State goal) {
@@ -335,7 +349,7 @@ public class ProfiledPIDController2 implements Sendable {
    * Returns the next output of the PIDController.
    *
    * @param measurement The current measurement of the process variable.
-   * @param goal The new goal of the controller.
+   * @param goal        The new goal of the controller.
    * @return The controller's next output.
    */
   public double calculate(double measurement, double goal) {
@@ -347,7 +361,7 @@ public class ProfiledPIDController2 implements Sendable {
    * Returns the next output of the PID controller.
    *
    * @param measurement The current measurement of the process variable.
-   * @param goal The new goal of the controller.
+   * @param goal        The new goal of the controller.
    * @param constraints Velocity and acceleration constraints for goal.
    * @return The controller's next output.
    */
@@ -380,8 +394,9 @@ public class ProfiledPIDController2 implements Sendable {
   /**
    * Reset the previous error and the integral term.
    *
-   * @param measuredPosition The current measured position of the system. The velocity is assumed to
-   *     be zero.
+   * @param measuredPosition The current measured position of the system. The
+   *                         velocity is assumed to
+   *                         be zero.
    */
   public void reset(double measuredPosition) {
     reset(measuredPosition, 0.0);
