@@ -15,7 +15,7 @@ public class MiddleStartCubeAndPark{
         return Commands.sequence(
             AutoStartUpCommand.AutoStartUp(tilt, drive),
             intake.runShootMotorCommandUntil(Constants.kHighShotMotorPower, Constants.kShootingTimeOut),
-            drive.driveDistanceCommand(Constants.kDistanceOverStation, 0.8, 0.0, Constants.kBalancingAutonTimAccel, 0.4),
+            drive.driveDistanceCommand(Constants.kDistanceOverStation, 1.0, 0.0, Constants.kBalancingAutonTimAccel, 0.4),
             drive.driveDistanceCommand(Constants.kDistanceBackToStation, 1.0, 0.0, Constants.kDriveTimAccel, 0.2),
             drive.balanceRollCommand(Constants.kNavXRollOffset)
             //drive.controlBrakeCommand(false)

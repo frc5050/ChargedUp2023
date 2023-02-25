@@ -129,19 +129,19 @@ public class RobotContainer {
     //m_joystick.button(8).whileFalse(m_drive.setBrakeUpCommand());
 
     //tilt 
-    m_driverController.povUp().whileTrue(m_tilt.runTiltMotorCommand(Constants.kTiltMotorOutMotorPower));
+    m_driverController.povUp().whileTrue(m_tilt.runTiltMotorCommand(Constants.kTiltMotorInMotorPower));
     m_driverController.povCenter().whileTrue(m_tilt.runTiltMotorCommand(0.0));
-    m_driverController.povDown().whileTrue(m_tilt.runTiltMotorCommand(Constants.kTiltMotorInMotorPower));
+    m_driverController.povDown().whileTrue(m_tilt.runTiltMotorCommand(Constants.kTiltMotorOutMotorPower));
 
     // runTi
     m_tilt.setDefaultCommand(
       m_tilt.runTiltMotorCommand(
     () -> {
       if (m_driverController.povDown().getAsBoolean() || m_driverController.povDownLeft().getAsBoolean() || m_driverController.povDownRight().getAsBoolean()) {
-        return 0.5;
+        return Constants.kTiltMotorInMotorPower;
       }
       else if (m_driverController.povUp().getAsBoolean() || m_driverController.povUpLeft().getAsBoolean() || m_driverController.povUpRight().getAsBoolean()) {
-        return -0.5;
+        return Constants.kTiltMotorOutMotorPower;
       }
       return 0.0;
     }
@@ -179,10 +179,15 @@ public class RobotContainer {
      m_driverController.rightStick().whileTrue(m_lifter.runElevatorCommand(0.7));
     m_driverController.rightStick().whileFalse(m_lifter.runElevatorCommand(0));
 
-    //tilt to position
+    //tilt to position out
     // TODO
-    m_driverController.rightTrigger().whileTrue(m_tilt.tiltToDegreesCommand(Constants.kTiltConePickUpHumanPlayerPosition, false));
+    m_driverController.rightTrigger().whileTrue(m_tilt.tiltToDegreesCommand(Constants.kTiltConeOutPosition, false));
     m_driverController.rightTrigger().whileFalse(m_intake.getDefaultCommand());
+
+    //tilt to position in
+    // TODO
+    m_driverController.leftTrigger().whileTrue(m_tilt.tiltToDegreesCommand(Constants.kTiltConeInPosition, false));
+    m_driverController.leftTrigger().whileFalse(m_intake.getDefaultCommand());
    
 
     // //elevator up

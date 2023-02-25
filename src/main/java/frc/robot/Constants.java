@@ -45,7 +45,7 @@ public final class Constants {
     public static final int kSolenoidChannel = 5;
     public static final double kStraightP = 0.6;
     public static final double kDriveDistanceTolerance = 0.1;
-    public static final double kBalancingAutonTimAccel = 0.6;
+    public static final double kBalancingAutonTimAccel = 0.7;
     public static final double kDriveTimAccel = 0.3;
     public static final double kNavXRollOffset = -3.0;
     public static final double kBalanceTolerance = 5;
@@ -69,7 +69,8 @@ public final class Constants {
     public static final float kTiltInSoftLimit = -8;
     public static final double kMidConePosition = 10.0;
     public static final double kIntakeIRDelay = 0.03;
-    public static final double kTiltConePickUpHumanPlayerPosition = 45;
+    public static final double kTiltConeOutPosition = 10;
+    public static final double kTiltConeInPosition = 140;
     public static final double kTiltConeHighPositionDegrees = 20;
     public static final double kTiltVoltageCompensation = 10.0; 
     public static final double kConeOuttakeMotorPower = -1.0;
