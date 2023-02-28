@@ -71,7 +71,8 @@ public final class Constants {
   public static final double kIntakeIRDelay = 0.03;
   public static final double kTiltConeOutPosition = 10;
   public static final double kTiltConeInPosition = 140;
-  public static final double kTiltConeHighPositionDegrees = 20;
+  public static final double kTiltConeHighFeederPositionDegrees = 10;
+  public static final double kTiltConeHighPositionDegrees = 20; //Should be 25ish
   public static final double kTiltVoltageCompensation = 10.0;
   public static final double kConeOuttakeMotorPower = -1.0;
   public static final double kConeIntakeMotorPower = 1.0;

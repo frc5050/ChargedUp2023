@@ -21,7 +21,6 @@ import frc.robot.Constants;
 public class Lifter extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   private CANSparkMax m_elevatorMotor = new CANSparkMax(Constants.kElevatorCANID, MotorType.kBrushless);
-  private CANSparkMax m_ConeIntakeMotor = new CANSparkMax(Constants.kConeIntakeCANID, MotorType.kBrushless);
   private RelativeEncoder m_elevatorEncoder;
   private SparkMaxPIDController m_elevatorPID;
   private final Timer m_ZeroingTimer;
@@ -29,10 +28,7 @@ public class Lifter extends SubsystemBase {
   public Lifter() {
     m_ZeroingTimer = new Timer();
     m_elevatorMotor.restoreFactoryDefaults();
-    m_ConeIntakeMotor.restoreFactoryDefaults();
     m_elevatorEncoder = m_elevatorMotor.getEncoder();
-    m_ConeIntakeMotor.setIdleMode(IdleMode.kBrake);
-    m_ConeIntakeMotor.setSmartCurrentLimit(10);
     m_elevatorMotor.setIdleMode(IdleMode.kBrake);
     m_elevatorPID = m_elevatorMotor.getPIDController();
     m_elevatorPID.setP(0.7);
@@ -67,36 +63,13 @@ public class Lifter extends SubsystemBase {
     return Math.abs(m_elevatorEncoder.getPosition()) >= Math.abs(minimumHeight);
   }
 
-  public CommandBase lifterDoNothingCommand() {
+  public CommandBase elevatorDoNothingCommand() {
     return run(
         () -> {
           m_elevatorMotor.set(0.0);
-          m_ConeIntakeMotor.set(0.0);
         });
   }
 
-  public CommandBase coneIntakeCommand() {
-    return run(
-        () -> {
-          double power = Constants.kConeIntakeMotorPower;
-          m_ConeIntakeMotor.set(power);
-          System.out.println("outtaking");
-        });
-  }
-
-  public CommandBase coneOuttakeCommand(boolean usetimeout) {
-    CommandBase out = run(
-        () -> {
-          double power = Constants.kConeOuttakeMotorPower;
-          m_ConeIntakeMotor.set(power);
-          System.out.println("outtaking");
-        });
-    if (usetimeout) {
-      out = out.withTimeout(0.5);
-    }
-    return out;
-
-  }
 
   public CommandBase runElevatorCommand(double power) {
     // Inline construction of command goes here.
@@ -120,17 +93,11 @@ public class Lifter extends SubsystemBase {
           m_elevatorPID.setReference(position, ControlType.kPosition);
         }).until(
             () -> {
-              System.out.println("elevator until: " + Math.abs(m_elevatorEncoder.getPosition() - position));
+              //System.out.println("elevator until: " + Math.abs(m_elevatorEncoder.getPosition() - position));
               return Math.abs(m_elevatorEncoder.getPosition() - position) <= Constants.kElevatorTolerance;
             });
   }
 
-  public CommandBase stopConeShooting() {
-    return runOnce(
-        () -> {
-          m_ConeIntakeMotor.stopMotor();
-        });
-  }
 
   /**
    * An example method querying a boolean state of the subsystem (for example, a

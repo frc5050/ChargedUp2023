@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants;
 import frc.robot.commands.AutoStartUpCommand;
+import frc.robot.subsystems.ConeIntake;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lifter;
@@ -11,7 +12,7 @@ import frc.robot.subsystems.Tilt;
 
 public class MiddleStartConeAndPark {
 
-        public static Command middleStartAndParkCommand(Drive drive, Intake intake, Lifter lifter, Tilt tilt) {
+        public static Command middleStartAndParkCommand(Drive drive, Intake intake, Lifter lifter, Tilt tilt, ConeIntake coneIntake) {
                 return Commands.sequence(
                                 AutoStartUpCommand.AutoStartUp(tilt, drive),
                                 // HighConeCommand.HighConeConfigurationCommand(intake, lifter),
@@ -32,13 +33,13 @@ public class MiddleStartConeAndPark {
                                                                                 Constants.kTiltConeHighPositionDegrees,
                                                                                 true)),
                                                 lifter.elevatorPIDAutonCommand(Constants.kElevatorHighPosition)),
-                                lifter.coneOuttakeCommand(true),
+                                coneIntake.coneOuttakeCommand(true),
 
                                 Commands.parallel(
                                                 tilt.runTiltMotorCommand(Constants.kTiltMotorInMotorPower)
                                                                 .withTimeout(Constants.kAutoReturnTiltTimeout),
-                                                lifter.coneOuttakeCommand(true)),
-                                lifter.stopConeShooting(),
+                                                coneIntake.coneOuttakeCommand(true)),
+                                coneIntake.stopConeShooting(),
                                 lifter.elevatorPIDAutonCommand(Constants.kElevatorDownPosition),
                                 drive.driveDistanceCommand(Constants.kDistanceOverStation, 1.0, 0.0,
                                                 Constants.kBalancingAutonTimAccel,

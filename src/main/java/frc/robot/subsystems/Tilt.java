@@ -65,14 +65,6 @@ public class Tilt extends SubsystemBase {
     m_tiltShaftEncoder.setPosition(Constants.kTiltFullyRetractedAngleDegrees);
   }
 
-  public CommandBase zeroTiltMotorEncoderCommand() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
-    return runOnce(
-        () -> {
-          zeroTiltMotor();
-        });
-  }
 
   public CommandBase zeroTiltMotorCommand() {
     return new ZeroIntake(this);

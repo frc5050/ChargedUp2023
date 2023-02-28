@@ -11,7 +11,6 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -21,7 +20,6 @@ public class Intake extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
 
   private CANSparkMax m_shootMotor = new CANSparkMax(Constants.kCubeIntakeCANID, MotorType.kBrushless);
-  public Solenoid m_Solenoid = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.kSolenoidChannel);
 
   private Timer m_intakeTimer;
   private Timer m_autonTimer;
@@ -115,14 +113,6 @@ public class Intake extends SubsystemBase {
     m_intakeTimer.reset();
   }
 
-  public CommandBase shootPopCommand(boolean solenoidState) {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
-    return runOnce(
-        () -> {
-          m_Solenoid.set(solenoidState);
-        });
-  }
 
   public CommandBase runShootMotorCommandwithPID(double targetValue, ControlType controlType) {
     // Inline construction of command goes here.
