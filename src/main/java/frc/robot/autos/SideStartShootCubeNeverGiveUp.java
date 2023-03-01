@@ -19,7 +19,7 @@ public class SideStartShootCubeNeverGiveUp {
                                                 Constants.kShootingTimeOut),
                                 drive.driveDistanceCommand(-3.8, 1.0, 0.0),
                                 drive.turnToAbsoluteAngleCommand(180),
-                                tilt.runTiltMotorCommandUntil(Constants.kIntakeTiltOutPower, 2.0),
+                                tilt.runTiltMotorCommandUntil(Constants.kAutoIntakeTiltOutPower, 2.0),
 
                                 Commands.parallel(
                                                 intake.runShootMotorCommandUntil(Constants.kIntakePower, 2.0),

@@ -35,7 +35,7 @@ public class SideStartPlaceConeNeverGiveUp {
                                 lifter.elevatorPIDAutonCommand(Constants.kElevatorDownPosition),
                                 drive.driveDistanceCommand(-4, 1.0, 0.0, Constants.kDriveTimAccel, 0.2),
                                 drive.turnToAbsoluteAngleCommand(180),
-                                tilt.runTiltMotorCommandUntil(Constants.kIntakeTiltOutPower, 2.0),
+                                tilt.runTiltMotorCommandUntil(Constants.kAutoIntakeTiltOutPower, 2.0),
 
                                 Commands.parallel(
                                                 intake.runShootMotorCommandUntil(Constants.kIntakePower, 1.0),

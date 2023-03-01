@@ -62,7 +62,8 @@ public class RobotContainer {
   SendableChooser<Command> m_chooser = new SendableChooser<>();
 
   public void periodic() {
-
+    System.out.println("Triggered Twitter Tiger" + m_driverController.getRightTriggerAxis());
+    System.out.println("Southpaw" + m_driverController.getLeftTriggerAxis());
   }
 
   // Replace with CommandPS4Controller or CommandJoystick if needed

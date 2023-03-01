@@ -58,26 +58,27 @@ public final class Constants {
 
   // shooting
   public static final double kShootingTimeOut = 1.0;
-  public static final double kHighShotMotorPower = -0.85;
-  public static final double kMidShotMotorPower = -0.5;
+  public static final double kHighShotMotorPower = -0.9;
+  public static final double kMidShotMotorPower = -0.55;
 
   // intake
   public static final double kIntakePower = 0.5;
-  public static final double kIntakeTiltOutPower = -0.3;
+  public static final double kAutoIntakeTiltOutPower = -0.3;
   public static final double kIntakeTiltZeroPower = 0.2;
-  public static final float kTiltOutSoftLimit = -24;
-  public static final float kTiltInSoftLimit = -8;
+  public static final float kTiltOutSoftLimit = -10;
+  public static final float kTiltInSoftLimit = -2;
   public static final double kMidConePosition = 10.0;
   public static final double kIntakeIRDelay = 0.03;
   public static final double kTiltConeOutPosition = 10;
   public static final double kTiltConeInPosition = 140;
   public static final double kTiltConeHighFeederPositionDegrees = 10;
   public static final double kTiltConeHighPositionDegrees = 20; //Should be 25ish
+  public static final double kTiltFeederPositionDegrees = 85;
   public static final double kTiltVoltageCompensation = 10.0;
   public static final double kConeOuttakeMotorPower = -1.0;
   public static final double kConeIntakeMotorPower = 1.0;
-  public static final double kTiltMotorInMotorPower = 0.5;
-  public static final double kTiltMotorOutMotorPower = -0.5;
+  public static final double kTiltMotorInMotorPower = 0.2;
+  public static final double kTiltMotorOutMotorPower = -0.2;
   public static final double kTiltFullyRetractedAngleDegrees = 150.0;
   public static final double kAutoReturnTiltTimeout = 0.5;
   public static final double kIntakeTimeout = 1.0;

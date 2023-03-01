@@ -91,7 +91,7 @@ public class Tilt extends SubsystemBase {
     // Subsystem::RunOnce implicitly requires `this` subsystem.
     CommandBase thing = run(
         () -> {
-
+          System.out.println("Stuff" + targetDegrees);
           double feedForwardPercent = Math.cos(getTiltAngleRadians()) / 10.0;
           if (getTiltAngleDegrees() >= 85 && getTiltAngleDegrees() <= 95) {
             feedForwardPercent = Math.cos(getTiltAngleRadians()) / 20.0;
