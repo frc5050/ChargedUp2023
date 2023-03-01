@@ -14,7 +14,7 @@ public class FeederConeIntakeCommand extends CommandBase{
     public static Command intakeConeCommand (Tilt tilt, Intake intake, ConeIntake coneIntake) {
         return Commands.parallel(tilt.tiltToDegreesCommand(Constants.kTiltFeederPositionDegrees, false),
         intake.runShootMotorCommand(-0.1),
-        coneIntake.coneIntakeCommand());
+        coneIntake.coneCommand(0.8));
     }
     
 }

@@ -32,6 +32,12 @@ public class ConeIntake extends SubsystemBase{
               m_ConeIntakeMotor.set(power);
             });
       }
+      public CommandBase coneCommand(double power) {
+        return run(
+            () -> {
+              m_ConeIntakeMotor.set(power);
+            });
+      }
 
     public CommandBase coneOuttakeCommand(boolean usetimeout) {
         CommandBase out = run(
