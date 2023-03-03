@@ -17,7 +17,7 @@ public class SideStartAndPark extends CommandBase {
     public static Command sideStartAndParkCommand(Drive drive, Intake intake, Brake brake, Tilt tilt) {
         drive.resetNavX();
         return Commands.sequence(
-                AutoStartUpCommand.AutoStartUp(tilt, drive),
+                AutoStartUpCommand.AutoStartUp(tilt, drive, brake),
                 tilt.zeroTiltMotorCommand(),
                 drive.zeroDriveEncoderCommand(),
                 brake.setBrakeUpCommand(),

@@ -52,6 +52,7 @@ public final class Constants {
   public static final double kBalanceTolerance = 5;
   public static final double kBalanceFeedForward = 0.01;
   public static final double kDistanceOverStation = -3.15;
+  public static final double kDistanceToStation = -1.9;
   public static final double kDistanceBackToStation = 1.25;
   public static final double kTurnPIDPositionTolerance = 2.0;
   public static final double kTurnPIDVelocityTolerance = 0.3;
@@ -59,7 +60,7 @@ public final class Constants {
   // shooting
   public static final double kShootingTimeOut = 1.0;
   public static final double kHighShotMotorPower = -0.9;
-  public static final double kMidShotMotorPower = -0.55;
+  public static final double kMidShotMotorPower = -0.58;
 
   // intake
   public static final double kIntakePower = 0.5;

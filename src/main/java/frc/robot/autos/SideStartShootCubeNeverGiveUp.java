@@ -13,7 +13,7 @@ public class SideStartShootCubeNeverGiveUp {
 
         public static Command sideStartNeverGiveUpCommand(Drive drive, Intake intake, Brake brake, Tilt tilt) {
                 return Commands.sequence(
-                                AutoStartUpCommand.AutoStartUp(tilt, drive),
+                                AutoStartUpCommand.AutoStartUp(tilt, drive, brake),
                                 drive.zeroDriveEncoderCommand(),
                                 intake.runShootMotorCommandUntil(Constants.kHighShotMotorPower,
                                                 Constants.kShootingTimeOut),
