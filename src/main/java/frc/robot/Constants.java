@@ -93,4 +93,9 @@ public final class Constants {
   public static final double kElevatorTolerance = 0.15;
   public static final double kAutonHeightWait = 45;
 
+  //LEDS
+  public static final int LEDPort = 0; 
+  public static final int LED2Port = 1; 
+  public static final int LEDCount = 20; 
+
 }

@@ -160,10 +160,12 @@ public class Intake extends SubsystemBase {
         });
   }
 
-  public CommandBase intakeDoNothingCommand() {
+  public CommandBase intakeDoNothingCommand(LED led) {
     return run(
         () -> {
           m_shootMotor.set(0.0);
+          led.setLEDColor(0, 0, 0);
+          
         });
   }
 

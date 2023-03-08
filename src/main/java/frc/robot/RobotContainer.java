@@ -23,6 +23,7 @@ import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lifter;
 import frc.robot.subsystems.Tilt;
+import frc.robot.subsystems.LED;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -48,6 +49,7 @@ public class RobotContainer {
   public Lifter m_lifter = new Lifter();
   public Brake m_brake = new Brake();
   public Tilt m_tilt = new Tilt();
+  public LED m_led = new LED();
   public ConeIntake m_coneIntake = new ConeIntake();
   CommandJoystick m_joystick = new CommandJoystick(1);
 
@@ -115,7 +117,7 @@ public class RobotContainer {
         m_drive.arcadeDriveCommand(
             () -> -m_joystick.getY(), () -> -m_joystick.getX()));
 
-    m_intake.setDefaultCommand(m_intake.intakeDoNothingCommand());
+    m_intake.setDefaultCommand(m_intake.intakeDoNothingCommand(m_led));
 
     m_brake.setDefaultCommand(m_brake.setBrakeCommand(m_joystick.button(8)));
 
@@ -191,7 +193,7 @@ public class RobotContainer {
 
     m_joystick.button(2).whileTrue(m_tilt.tiltToDegreesCommand(75, false));
 
-    m_driverController.rightBumper().whileTrue(FeederConeIntakeCommand.intakeConeCommand(m_tilt, m_intake, m_coneIntake));
+    m_driverController.rightBumper().whileTrue(FeederConeIntakeCommand.intakeConeCommand(m_tilt, m_intake, m_coneIntake, m_led));
 
   }
 

@@ -7,14 +7,17 @@ import frc.robot.Constants;
 import frc.robot.subsystems.ConeIntake;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Tilt;
+import frc.robot.subsystems.LED;
 
 public class FeederConeIntakeCommand extends CommandBase{
 
     //Cone Intake with slow Cube Outtake
-    public static Command intakeConeCommand (Tilt tilt, Intake intake, ConeIntake coneIntake) {
+    public static Command intakeConeCommand (Tilt tilt, Intake intake, ConeIntake coneIntake, LED led) {
+        led.setLEDColor(255, 0, 0);
         return Commands.parallel(tilt.tiltToDegreesCommand(Constants.kTiltFeederPositionDegrees, false),
         intake.runShootMotorCommand(-0.1),
         coneIntake.coneCommand(0.8));
+        
     }
     
 }
