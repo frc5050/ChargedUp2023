@@ -145,14 +145,19 @@ public class Intake extends SubsystemBase {
     return !m_shooterIR.get();
   }
 
-  public CommandBase runShootMotorCommand(double power) {
+  //TODO The LEDs will have issues if we lower intake spinning power
+  public boolean intakeIsSpinning(){
+    return Math.abs(m_shootMotor.get()) > 0.1;
+  }
+
+  public CommandBase runShootMotorCommand(double power, LED led) {
     // Inline construction of command goes here.
     // Subsystem::RunOnce implicitly requires `this` subsystem.
     return run(
         () -> {
           if (shooterIRisTriggered() && power > 0 && m_intakeTimer.hasElapsed(Constants.kIntakeIRDelay)) {
             m_shootMotor.set(0);
-
+            led.setLEDColorCommand(106, 76, 0);
           } else {
             m_shootMotor.set(power);
           }
@@ -160,11 +165,10 @@ public class Intake extends SubsystemBase {
         });
   }
 
-  public CommandBase intakeDoNothingCommand(LED led) {
+  public CommandBase intakeDoNothingCommand() {
     return run(
         () -> {
           m_shootMotor.set(0.0);
-          led.setLEDColor(0, 0, 0);
           
         });
   }

@@ -13,11 +13,11 @@ public class FeederConeIntakeCommand extends CommandBase{
 
     //Cone Intake with slow Cube Outtake
     public static Command intakeConeCommand (Tilt tilt, Intake intake, ConeIntake coneIntake, LED led) {
-        led.setLEDColor(255, 0, 0);
         return Commands.parallel(tilt.tiltToDegreesCommand(Constants.kTiltFeederPositionDegrees, false),
-        intake.runShootMotorCommand(-0.1),
-        coneIntake.coneCommand(0.8));
-        
+        intake.runShootMotorCommand(-0.1, led),
+        coneIntake.coneCommand(0.8)
+        //led.setLEDColorCommand(25, 0, 29)
+        );
     }
     
 }

@@ -97,5 +97,16 @@ public final class Constants {
   public static final int LEDPort = 0; 
   public static final int LED2Port = 1; 
   public static final int LEDCount = 20; 
+  /* 
+  this one is purple
+  led.setLEDColor(25, 0, 29);
+  this one is Yellow
+  led.setLEDColor(106, 76, 0);
+  This one is green
+  led.setLEDColor(0, 110, 0);
+  HAWT Pink Color Code
+  m_led.setLEDColorCommand(200,11,37); 
+  */
+  
 
 }

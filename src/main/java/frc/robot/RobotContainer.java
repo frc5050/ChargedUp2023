@@ -16,6 +16,7 @@ import frc.robot.autos.doNothing;
 import frc.robot.commands.FeederConeIntakeCommand;
 import frc.robot.commands.HighConeCommand;
 import frc.robot.commands.HighFeederConeIntakeCommand;
+import frc.robot.commands.LEDTestCommand;
 import frc.robot.commands.MediumConeCommand;
 import frc.robot.subsystems.Brake;
 import frc.robot.subsystems.ConeIntake;
@@ -67,6 +68,7 @@ public class RobotContainer {
     private final Command m_middleStartCubeAndPark = MiddleStartCubeAndPark.middleStartAndParkCommand(m_drive, m_intake, m_tilt, m_brake);
 
     private final Command m_middleStartConeAndPark = MiddleStartConeAndPark.middleStartAndParkCommand(m_drive, m_intake, m_lifter, m_tilt, m_coneIntake, m_brake);
+    private final Command m_LEDTestCommand = LEDTestCommand.intakeConeCommand(m_led);
   SendableChooser<Command> m_chooser = new SendableChooser<>();
 
 
@@ -93,6 +95,7 @@ public class RobotContainer {
     m_chooser.addOption("DoNothing", m_doNothing);
     m_chooser.addOption("MiddleStartCubeAndPark", m_middleStartCubeAndPark);
     m_chooser.addOption("MiddleStartConeAndPark" , m_middleStartConeAndPark);
+    m_chooser.addOption("LEADEN WEIGHTS", m_LEDTestCommand);
     SmartDashboard.putData(m_chooser);
     CameraServer.startAutomaticCapture();
 
@@ -117,7 +120,9 @@ public class RobotContainer {
         m_drive.arcadeDriveCommand(
             () -> -m_joystick.getY(), () -> -m_joystick.getX()));
 
-    m_intake.setDefaultCommand(m_intake.intakeDoNothingCommand(m_led));
+    m_intake.setDefaultCommand(m_intake.intakeDoNothingCommand());
+
+    m_led.setDefaultCommand(m_led.controlLEDCommand(m_intake, m_tilt));
 
     m_brake.setDefaultCommand(m_brake.setBrakeCommand(m_joystick.button(8)));
 
@@ -148,16 +153,16 @@ public class RobotContainer {
             }));
 
     // intake
-    m_driverController.x().whileTrue(m_intake.runShootMotorCommand(0.5));
+    m_driverController.x().whileTrue(m_intake.runShootMotorCommand(0.5, m_led));
 
     // outtake
-    m_driverController.b().whileTrue(m_intake.runShootMotorCommand(-0.5));
+    m_driverController.b().whileTrue(m_intake.runShootMotorCommand(-0.5, m_led));
 
     // medium height shot
-    m_joystick.button(5).whileTrue(m_intake.runShootMotorCommand(Constants.kMidShotMotorPower));
+    m_joystick.button(5).whileTrue(m_intake.runShootMotorCommand(Constants.kMidShotMotorPower, m_led));
 
     // high shot
-    m_joystick.button(6).whileTrue(m_intake.runShootMotorCommand(Constants.kHighShotMotorPower));
+    m_joystick.button(6).whileTrue(m_intake.runShootMotorCommand(Constants.kHighShotMotorPower, m_led));
 
     // //cone intake
     m_driverController.a().whileTrue(m_coneIntake.coneIntakeCommand());

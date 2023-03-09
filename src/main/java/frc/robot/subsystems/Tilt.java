@@ -112,6 +112,10 @@ public class Tilt extends SubsystemBase {
 
   }
 
+  public double getTiltSetpoint (){
+    return m_tiltPID.getSetpoint();
+  }
+
   public void zeroTiltMotor() {
     m_tiltShaftEncoder.setPosition(Constants.kTiltFullyRetractedAngleDegrees);
     m_tiltEncoder.setPosition(0.0);
