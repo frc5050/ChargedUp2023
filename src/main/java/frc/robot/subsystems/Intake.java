@@ -173,6 +173,10 @@ public class Intake extends SubsystemBase {
         });
   }
 
+  public double getCurrentIntakeMotorPower(){
+    return m_shootMotor.get();
+  }
+
   /**
    * An example method querying a boolean state of the subsystem (for example, a
    * digital sensor).

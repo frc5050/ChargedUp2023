@@ -33,13 +33,14 @@ public class SideStartPlaceConePickUpCube {
                                                 coneIntake.coneOuttakeCommand(true)),
                                 coneIntake.stopConeShooting(),
                                 lifter.elevatorPIDAutonCommand(Constants.kElevatorDownPosition),
-                                drive.driveDistanceCommand(-4, 2.0, 0.0, (Constants.kDriveTimAccel * 2) + 0.2, 0.2, true),
+                                drive.driveDistanceCommand(-3.5, 2.0, 0.0, (Constants.kDriveTimAccel * 2) + 0.2, 0.2, true),
                                 drive.turnToAbsoluteAngleCommand(180),
                                 tilt.runTiltMotorCommandUntil(Constants.kAutoIntakeTiltOutPower, 2.0),
 
                                 Commands.parallel(
-                                                intake.runShootMotorCommandUntil(Constants.kIntakePower, 1.0),
-                                                drive.driveDistanceCommand(1.2, 0.4, 0.0, true)));
+                                                intake.runShootMotorCommandUntil(Constants.kIntakePower, 1.5),
+
+                                                drive.driveDistanceCommand(0.8, 0.4, 0.0, true)));
 
         }
 

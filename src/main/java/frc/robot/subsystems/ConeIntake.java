@@ -52,6 +52,23 @@ public class ConeIntake extends SubsystemBase{
     
       }
 
+      public CommandBase coneIntakeCommand(boolean usetimeout) {
+        CommandBase out = run(
+            () -> {
+              double power = Constants.kConeIntakeMotorPower;
+              m_ConeIntakeMotor.set(power);
+            });
+        if (usetimeout) {
+          out = out.withTimeout(1.0);
+        }
+        return out;
+    
+      }
+
+      public double getCurrentConeIntakePower(){
+        return m_ConeIntakeMotor.get();
+      }
+
       public CommandBase stopConeShooting() {
         return runOnce(
             () -> {

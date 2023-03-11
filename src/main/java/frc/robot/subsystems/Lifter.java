@@ -99,6 +99,7 @@ public class Lifter extends SubsystemBase {
   }
 
 
+
   /**
    * An example method querying a boolean state of the subsystem (for example, a
    * digital sensor).

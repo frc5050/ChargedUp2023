@@ -11,7 +11,9 @@ import frc.robot.autos.MiddleStartConeLeaveAndPark;
 import frc.robot.autos.MiddleStartCubeAndPark;
 import frc.robot.autos.MiddleStartCubeLeaveAndPark;
 import frc.robot.autos.SideStartPlaceConePickUpCone;
+import frc.robot.autos.SideStartPlaceConePickUpConeTurn;
 import frc.robot.autos.SideStartPlaceConePickUpCube;
+import frc.robot.autos.SideStartPlaceConePickUpCubeTurn;
 import frc.robot.autos.SideStartShootCubePickUpCone;
 import frc.robot.autos.SideStartShootCubePickUpCube;
 import frc.robot.autos.doNothing;
@@ -73,6 +75,8 @@ public class RobotContainer {
     private final Command m_middleStartCubeAndPark = MiddleStartCubeAndPark.middleStartAndParkCommand(m_drive, m_intake, m_tilt, m_brake);
 
     private final Command m_middleStartConeAndPark = MiddleStartConeAndPark.middleStartAndParkCommand(m_drive, m_intake, m_lifter, m_tilt, m_coneIntake, m_brake);
+    private final Command m_sideStartPlaceConePickUpConeTurn = SideStartPlaceConePickUpConeTurn.sideStartNeverGiveUpCommand(m_drive, m_intake, m_brake, m_tilt, m_lifter, m_coneIntake);
+    private final Command m_sideStartPlaceConePickUpCubeTurn = SideStartPlaceConePickUpCubeTurn.sideStartNeverGiveUpCommand(m_drive, m_intake, m_brake, m_tilt, m_lifter, m_coneIntake);
   SendableChooser<Command> m_chooser = new SendableChooser<>();
 
 
@@ -101,6 +105,8 @@ public class RobotContainer {
     m_chooser.addOption("MiddleStartConeAndPark" , m_middleStartConeAndPark);
     m_chooser.addOption("SideStartShootCubePickUpCone" , m_sideStartShootCubePickUpCone);
     m_chooser.addOption("SideStartPlaceConePickUpCone" , m_sideStartPlaceConePickUpCone);
+    m_chooser.addOption("SideStartPlaceConePickUpConeTurn", m_sideStartPlaceConePickUpConeTurn);
+    m_chooser.addOption("SideStartPlaceConePickUpCubeTurn", m_sideStartPlaceConePickUpCubeTurn);
     SmartDashboard.putData(m_chooser);
     CameraServer.startAutomaticCapture();
 
@@ -127,7 +133,7 @@ public class RobotContainer {
 
     m_intake.setDefaultCommand(m_intake.intakeDoNothingCommand());
 
-    m_led.setDefaultCommand(m_led.controlLEDCommand(m_intake, m_tilt));
+    m_led.setDefaultCommand(m_led.controlLEDCommand(m_intake, m_tilt, m_coneIntake));
 
     m_brake.setDefaultCommand(m_brake.setBrakeCommand(m_joystick.button(8)));
 

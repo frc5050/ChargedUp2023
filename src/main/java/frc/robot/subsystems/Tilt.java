@@ -107,7 +107,12 @@ public class Tilt extends SubsystemBase {
         });
     if (checkDoneness) {
       thing = thing.until(() -> Math.abs(getTiltAngleDegrees() - targetDegrees) <= 10);
-    }
+    } 
+    thing = thing.finallyDo(interrupted -> {
+
+      m_tiltPID.setSetpoint(Constants.kTiltConeInPosition);
+
+    });
     return thing;
 
   }

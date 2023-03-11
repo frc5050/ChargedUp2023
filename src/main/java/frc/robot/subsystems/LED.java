@@ -43,32 +43,35 @@ public class LED extends SubsystemBase{
         });
     }
 
-    public CommandBase controlLEDCommand(Intake intake, Tilt tilt){
+    //TODO needs help
+    public CommandBase controlLEDCommand(Intake intake, Tilt tilt, ConeIntake coneIntake){
+
         return run (
             () -> {
-        if(intake.shooterIRisTriggered()){
+        if(intake.shooterIRisTriggered()){ //cube intake is full
             for (var i = 0; i < m_ledBuffer.getLength(); i++) {
                 m_ledBuffer.setRGB(i, 0, 110, 0);
             }
                 m_led.setData(m_ledBuffer);
-        } else if(intake.intakeIsSpinning()){
+        } else if (coneIntake.getCurrentConeIntakePower() > 0.0){ //cone intake 
             for (var i = 0; i < m_ledBuffer.getLength(); i++) {
                 m_ledBuffer.setRGB(i, 106, 76, 0);
             }
                 m_led.setData(m_ledBuffer);
-        } else if (!(Constants.kTiltFeederPositionDegrees == tilt.getTiltSetpoint())){
+        } else if(intake.getCurrentIntakeMotorPower() > 0){  //cube intake
             for (var i = 0; i < m_ledBuffer.getLength(); i++) {
                 m_ledBuffer.setRGB(i, 25, 0, 29);
             }
                 m_led.setData(m_ledBuffer);
         } else {
             for (var i = 0; i < m_ledBuffer.getLength(); i++) {
-                m_ledBuffer.setRGB(i, 0, 0, 0);
+                m_ledBuffer.setRGB(i, 50, 50, 50);
+
             }
                 m_led.setData(m_ledBuffer);
         }
         }
-        );
+        ).ignoringDisable(true);
     }
 
     public CommandBase setLEDColorCommand(int R, int G, int B) {
@@ -82,4 +85,6 @@ public class LED extends SubsystemBase{
             m_led.setData(m_ledBuffer); 
             });
       }
+
+
 }
