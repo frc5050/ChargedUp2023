@@ -229,7 +229,7 @@ public class Drive extends SubsystemBase {
   // speed of 0.5 m/s
 
   public CommandBase driveDistanceCommand(double distanceMeters, double timSpeed, double rotation, double timAccel,
-      double positionTolerance) {
+      double positionTolerance, boolean WantToStopAfterPassingTarget) {
     // double speed = m_driveStraightPID.calculate(speed, rotation)
     return runOnce(
         () -> {
@@ -262,7 +262,9 @@ public class Drive extends SubsystemBase {
 
               System.out.println("desired change: " + desiredChange);
               SmartDashboard.putNumber("Desired Change", desiredChange);
-              System.out.println("current change: " + currentChange);
+              SmartDashboard.putNumber("aCurrent Change", currentChange);
+              SmartDashboard.putNumber("aDistance Meters", distanceMeters);
+              SmartDashboard.putNumber("aICALLFORDIVISION", currentChange/distanceMeters);
               currentChange = currentPosition - lStartingPosition;
               System.out.println("Speed: " + speed);
               System.out.println("Current Position: " + currentPosition);
@@ -276,7 +278,14 @@ public class Drive extends SubsystemBase {
                 // End command when we've traveled the specified distance
                 .until(
                     // () -> (currentChange / desiredChange) >= 1)
-                    () -> m_driveStraightPID.atGoal())
+                    () -> {
+                      if (WantToStopAfterPassingTarget){
+                        if (currentChange / distanceMeters >= 1 ){
+                          return true;
+                        }
+                      }
+                      return m_driveStraightPID.atGoal();
+                    })
                 // () -> m_driveStraightPID.atSetpoint())
                 // Stop the drive when the command ends
                 .finallyDo(interrupted -> {
@@ -292,7 +301,11 @@ public class Drive extends SubsystemBase {
 
   public CommandBase driveDistanceCommand(double distanceMeters, double timSpeed, double rotation) {
     return driveDistanceCommand(distanceMeters, timSpeed, rotation, Constants.kDriveTimAccel,
-        Constants.kDriveDistanceTolerance);
+        Constants.kDriveDistanceTolerance, false);
+  }
+  public CommandBase driveDistanceCommand(double distanceMeters, double timSpeed, double rotation, boolean WantToStopAfterPassingTarget) {
+    return driveDistanceCommand(distanceMeters, timSpeed, rotation, Constants.kDriveTimAccel,
+        Constants.kDriveDistanceTolerance, true);
   }
 
   public CommandBase turnToAbsoluteAngleCommand(double angleDegrees) {

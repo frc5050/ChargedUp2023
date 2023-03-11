@@ -44,7 +44,7 @@ public class MiddleStartConeAndPark {
                         lifter.elevatorPIDAutonCommand(Constants.kElevatorDownPosition),
                         drive.driveDistanceCommand(Constants.kDistanceToStation, 1.0, 0.0,
                                         Constants.kBalancingAutonTimAccel,
-                                        0.4),
+                                        0.4, false),
                         drive.balanceRollCommand(Constants.kNavXRollOffset),
                         brake.setBrakeDownCommand()
                         

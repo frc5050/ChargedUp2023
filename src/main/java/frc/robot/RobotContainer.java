@@ -10,8 +10,10 @@ import frc.robot.autos.MiddleStartConeAndPark;
 import frc.robot.autos.MiddleStartConeLeaveAndPark;
 import frc.robot.autos.MiddleStartCubeAndPark;
 import frc.robot.autos.MiddleStartCubeLeaveAndPark;
-import frc.robot.autos.SideStartPlaceConeNeverGiveUp;
-import frc.robot.autos.SideStartShootCubeNeverGiveUp;
+import frc.robot.autos.SideStartPlaceConePickUpCone;
+import frc.robot.autos.SideStartPlaceConePickUpCube;
+import frc.robot.autos.SideStartShootCubePickUpCone;
+import frc.robot.autos.SideStartShootCubePickUpCube;
 import frc.robot.autos.doNothing;
 import frc.robot.commands.FeederConeIntakeCommand;
 import frc.robot.commands.HighConeCommand;
@@ -60,15 +62,17 @@ public class RobotContainer {
       m_tilt, m_brake);
   private final Command m_doNothing = doNothing.doNothingCommand();
   private final Command m_doStartUpTasks = DoStartUpTasks.doStartUpTasksCommand(m_tilt, m_drive, m_brake);
-  private final Command m_sideStartPlaceConeNeverGiveUp = SideStartPlaceConeNeverGiveUp
+  private final Command m_sideStartPlaceConePickUpCube = SideStartPlaceConePickUpCube
       .sideStartNeverGiveUpCommand(m_drive, m_intake, m_brake, m_tilt, m_lifter, m_coneIntake);
-  private final Command m_sideStartShootCubeNeverGiveUp = SideStartShootCubeNeverGiveUp
+  private final Command m_sideStartShootCubePickUpCube = SideStartShootCubePickUpCube
       .sideStartNeverGiveUpCommand(m_drive, m_intake, m_brake, m_tilt);
+
+  private final Command m_sideStartShootCubePickUpCone = SideStartShootCubePickUpCone.sideStartShootCubePickUpConeCommand(m_drive, m_intake, m_brake, m_tilt, m_coneIntake);
+  private final Command m_sideStartPlaceConePickUpCone = SideStartPlaceConePickUpCone.sideStartNeverGiveUpCommand(m_drive, m_intake, m_brake, m_tilt, m_lifter, m_coneIntake);
 
     private final Command m_middleStartCubeAndPark = MiddleStartCubeAndPark.middleStartAndParkCommand(m_drive, m_intake, m_tilt, m_brake);
 
     private final Command m_middleStartConeAndPark = MiddleStartConeAndPark.middleStartAndParkCommand(m_drive, m_intake, m_lifter, m_tilt, m_coneIntake, m_brake);
-    private final Command m_LEDTestCommand = LEDTestCommand.intakeConeCommand(m_led);
   SendableChooser<Command> m_chooser = new SendableChooser<>();
 
 
@@ -90,12 +94,13 @@ public class RobotContainer {
     m_chooser.setDefaultOption("Default", m_doStartUpTasks);
     m_chooser.addOption("MiddleStartCubeLeaveAndPark", m_middleStartCubeLeaveAndPark);
     m_chooser.addOption("MiddleStartConeLeaveAndPark", m_middleStartConeLeaveAndPark);
-    m_chooser.addOption("SideStartPlaceConeNeverGiveUp", m_sideStartPlaceConeNeverGiveUp);
-    m_chooser.addOption("SideStartShootCubeNeverGiveUp", m_sideStartShootCubeNeverGiveUp);
+    m_chooser.addOption("SideStartPlaceConePickUpCube", m_sideStartPlaceConePickUpCube);
+    m_chooser.addOption("SideStartShootCubePickUpCube", m_sideStartShootCubePickUpCube);
     m_chooser.addOption("DoNothing", m_doNothing);
     m_chooser.addOption("MiddleStartCubeAndPark", m_middleStartCubeAndPark);
     m_chooser.addOption("MiddleStartConeAndPark" , m_middleStartConeAndPark);
-    m_chooser.addOption("LEADEN WEIGHTS", m_LEDTestCommand);
+    m_chooser.addOption("SideStartShootCubePickUpCone" , m_sideStartShootCubePickUpCone);
+    m_chooser.addOption("SideStartPlaceConePickUpCone" , m_sideStartPlaceConePickUpCone);
     SmartDashboard.putData(m_chooser);
     CameraServer.startAutomaticCapture();
 

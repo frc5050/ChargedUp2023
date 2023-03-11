@@ -9,7 +9,7 @@ import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Tilt;
 
-public class SideStartShootCubeNeverGiveUp {
+public class SideStartShootCubePickUpCube {
 
         public static Command sideStartNeverGiveUpCommand(Drive drive, Intake intake, Brake brake, Tilt tilt) {
                 return Commands.sequence(
@@ -23,7 +23,7 @@ public class SideStartShootCubeNeverGiveUp {
 
                                 Commands.parallel(
                                                 intake.runShootMotorCommandUntil(Constants.kIntakePower, 2.0),
-                                                drive.driveDistanceCommand(1, 0.4, 0.0)));
+                                                drive.driveDistanceCommand(1.5, 0.4, 0.0, true)));
 
         }
 
