@@ -96,17 +96,17 @@ public class RobotContainer {
     SmartDashboard.putData(m_drive);
 
     m_chooser.setDefaultOption("Default", m_doStartUpTasks);
+    m_chooser.addOption("DoNothing", m_doNothing);
     m_chooser.addOption("MiddleStartCubeLeaveAndPark", m_middleStartCubeLeaveAndPark);
     m_chooser.addOption("MiddleStartConeLeaveAndPark", m_middleStartConeLeaveAndPark);
-    m_chooser.addOption("SideStartPlaceConePickUpCube", m_sideStartPlaceConePickUpCube);
     m_chooser.addOption("SideStartShootCubePickUpCube", m_sideStartShootCubePickUpCube);
-    m_chooser.addOption("DoNothing", m_doNothing);
+    m_chooser.addOption("SideStartPlaceConePickUpCube", m_sideStartPlaceConePickUpCube);
     m_chooser.addOption("MiddleStartCubeAndPark", m_middleStartCubeAndPark);
     m_chooser.addOption("MiddleStartConeAndPark" , m_middleStartConeAndPark);
     m_chooser.addOption("SideStartShootCubePickUpCone" , m_sideStartShootCubePickUpCone);
     m_chooser.addOption("SideStartPlaceConePickUpCone" , m_sideStartPlaceConePickUpCone);
-    m_chooser.addOption("SideStartPlaceConePickUpConeTurn", m_sideStartPlaceConePickUpConeTurn);
     m_chooser.addOption("SideStartPlaceConePickUpCubeTurn", m_sideStartPlaceConePickUpCubeTurn);
+    m_chooser.addOption("SideStartPlaceConePickUpConeTurn", m_sideStartPlaceConePickUpConeTurn);
     SmartDashboard.putData(m_chooser);
     CameraServer.startAutomaticCapture();
 
