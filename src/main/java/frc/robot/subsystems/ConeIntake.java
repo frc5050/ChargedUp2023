@@ -14,8 +14,7 @@ public class ConeIntake extends SubsystemBase{
     public ConeIntake(){
         m_ConeIntakeMotor.restoreFactoryDefaults();
         m_ConeIntakeMotor.setIdleMode(IdleMode.kBrake);
-        m_ConeIntakeMotor.setSmartCurrentLimit(10);
-
+        m_ConeIntakeMotor.setSmartCurrentLimit(10, 10);
     }
 
     public CommandBase coneIntakeDoNothingCommand() {
