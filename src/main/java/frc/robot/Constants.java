@@ -61,6 +61,7 @@ public final class Constants {
   public static final double kShootingTimeOut = 1.0;
   public static final double kHighShotMotorPower = -0.9;
   public static final double kMidShotMotorPower = -0.58;
+  public static final double kVeryLowShootPower = -0.4;
 
   // intake
   public static final double kIntakePower = 0.5;

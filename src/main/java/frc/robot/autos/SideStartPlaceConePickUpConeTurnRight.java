@@ -11,8 +11,9 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Lifter;
 import frc.robot.subsystems.Tilt;
 
-public class SideStartPlaceConePickUpCubeTurn {
+public class SideStartPlaceConePickUpConeTurnRight {
     
+
     public static Command sideStartNeverGiveUpCommand(Drive drive, Intake intake, Brake brake, Tilt tilt,
     Lifter lifter, ConeIntake coneIntake) {
 return Commands.sequence(
@@ -33,14 +34,13 @@ return Commands.sequence(
                             coneIntake.coneOuttakeCommand(true)),
             coneIntake.stopConeShooting(),
             lifter.elevatorPIDAutonCommand(Constants.kElevatorDownPosition),
-            drive.driveDistanceCommand(-3.5, 2.0, 0.0, (Constants.kDriveTimAccel * 2) + 0.2, 0.2, true),
-            drive.turnToAbsoluteAngleCommand(205),
+            drive.driveDistanceCommand(-4, 2.0, 0.0, (Constants.kDriveTimAccel * 2) + 0.2, 0.2, true),
+            drive.turnToAbsoluteAngleCommand(160),
             tilt.runTiltMotorCommandUntil(Constants.kAutoIntakeTiltOutPower, 2.0),
 
             Commands.parallel(
-                            intake.runShootMotorCommandUntil(Constants.kIntakePower, 1.5),
-
-                            drive.driveDistanceCommand(0.8, 0.4, 0.0, true)));
+                            coneIntake.coneIntakeCommand(true),
+                            drive.driveDistanceCommand(0.6, 0.4, 0.0, true)));
 
 }
 }
