@@ -51,9 +51,9 @@ public final class Constants {
   public static final double kNavXRollOffset = -3.0;
   public static final double kBalanceTolerance = 5;
   public static final double kBalanceFeedForward = 0.01;
-  public static final double kDistanceOverStation = -3.15;
+  public static final double kDistanceOverStation = -3.65;
   public static final double kDistanceToStation = -1.9;
-  public static final double kDistanceBackToStation = 1.25;
+  public static final double kDistanceBackToStation = 1.5;
   public static final double kTurnPIDPositionTolerance = 2.0;
   public static final double kTurnPIDVelocityTolerance = 0.3;
 
