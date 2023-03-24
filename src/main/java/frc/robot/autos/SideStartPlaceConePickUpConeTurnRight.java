@@ -35,7 +35,7 @@ return Commands.sequence(
             coneIntake.stopConeShooting(),
             lifter.elevatorPIDAutonCommand(Constants.kElevatorDownPosition),
             drive.driveDistanceCommand(-4, 2.0, 0.0, (Constants.kDriveTimAccel * 2) + 0.2, 0.2, true),
-            drive.turnToAbsoluteAngleCommand(160),
+            drive.turnToAbsoluteAngleCommand(155),
             tilt.runTiltMotorCommandUntil(Constants.kAutoIntakeTiltOutPower, 2.0),
 
             Commands.parallel(
