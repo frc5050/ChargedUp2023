@@ -48,7 +48,7 @@ public final class Constants {
   public static final double kDriveDistanceTolerance = 0.1;
   public static final double kBalancingAutonTimAccel = 0.7;
   public static final double kDriveTimAccel = 0.3;
-  public static final double kNavXRollOffset = -3.0;
+  public static final double kNavXRollOffset = -2.0;
   public static final double kBalanceTolerance = 5;
   public static final double kBalanceFeedForward = 0.01;
   public static final double kDistanceOverStation = -3.65;
@@ -59,7 +59,7 @@ public final class Constants {
 
   // shooting
   public static final double kShootingTimeOut = 1.0;
-  public static final double kHighShotMotorPower = -0.9;
+  public static final double kHighShotMotorPower = -0.95;
   public static final double kMidShotMotorPower = -0.58;
   public static final double kVeryLowShootPower = -0.4;
 
@@ -70,7 +70,7 @@ public final class Constants {
   public static final float kTiltOutSoftLimit = -10;
   public static final float kTiltInSoftLimit = -2;
   public static final double kMidConePosition = 10.0;
-  public static final double kIntakeIRDelay = 0.03;
+  public static final double kIntakeIRDelay = 0.2;
   public static final double kTiltConeOutPosition = 10;
   public static final double kTiltConeInPosition = 140;
   public static final double kTiltConeHighFeederPositionDegrees = 5.0;
@@ -84,15 +84,17 @@ public final class Constants {
   public static final double kTiltFullyRetractedAngleDegrees = 150.0;
   public static final double kAutoReturnTiltTimeout = 0.5;
   public static final double kIntakeTimeout = 1.0;
+  public static final double kTiltHighCubePosition = 75.0 ;
 
   // elevator
   public static final float kElevatorTopSoftLimit = -126.6f;
   public static final float kElevatorBottomSoftLimit = 0;
-  public static final double kElevatorHighPosition = -126.58;
+  public static final double kElevatorHighConePosition = -126.58;
   public static final double kElevatorMiddlePosition = -96;
   public static final double kElevatorDownPosition = 0.0;
   public static final double kElevatorTolerance = 0.15;
   public static final double kAutonHeightWait = 45;
+  public static final double kElevatorHighCubePosition = -126.58;
 
   //LEDS
   public static final int LEDPort = 0; 

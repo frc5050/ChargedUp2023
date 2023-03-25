@@ -18,13 +18,13 @@ public class SideStartShootCubePickUpCone {
                         drive.zeroDriveEncoderCommand(),
                         intake.runShootMotorCommandUntil(Constants.kHighShotMotorPower,
                                         Constants.kShootingTimeOut),
-                        drive.driveDistanceCommand(-3.8, 1.0, 0.0),
+                        drive.driveDistanceCommand(-3.8, 1.0, 0.0, true),
                         drive.turnToAbsoluteAngleCommand(180),
                         tilt.runTiltMotorCommandUntil(Constants.kAutoIntakeTiltOutPower, 2.0),
 
                         Commands.parallel(
                                         coneIntake.coneIntakeCommand(),
-                                        drive.driveDistanceCommand(1.5, 0.4, 0.0, true)));
+                                        drive.driveDistanceCommand(0.8, 0.4, 0.0, true)));
 
 }
     

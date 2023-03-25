@@ -10,6 +10,7 @@ import frc.robot.autos.MiddleStartConeAndPark;
 import frc.robot.autos.MiddleStartConeLeaveAndPark;
 import frc.robot.autos.MiddleStartCubeAndPark;
 import frc.robot.autos.MiddleStartCubeLeaveAndPark;
+import frc.robot.autos.SideStartCubeTest;
 import frc.robot.autos.SideStartPlaceConePickUpCone;
 import frc.robot.autos.SideStartPlaceConePickUpConeTurnLeft;
 import frc.robot.autos.SideStartPlaceConePickUpConeTurnRight;
@@ -21,8 +22,8 @@ import frc.robot.autos.SideStartShootCubePickUpCube;
 import frc.robot.autos.doNothing;
 import frc.robot.commands.FeederConeIntakeCommand;
 import frc.robot.commands.HighConeCommand;
+import frc.robot.commands.HighCubeCommand;
 import frc.robot.commands.HighFeederConeIntakeCommand;
-import frc.robot.commands.LEDTestCommand;
 import frc.robot.commands.MediumConeCommand;
 import frc.robot.subsystems.Brake;
 import frc.robot.subsystems.ConeIntake;
@@ -59,6 +60,7 @@ public class RobotContainer {
   public LED m_led = new LED();
   public ConeIntake m_coneIntake = new ConeIntake();
   CommandJoystick m_joystick = new CommandJoystick(1);
+  public final CommandXboxController m_driverController = new CommandXboxController(Constants.kDriverControllerPort);
 
   private final Command m_middleStartConeLeaveAndPark = MiddleStartConeLeaveAndPark.middleStartAndParkCommand(m_drive, m_intake,
       m_lifter, m_tilt, m_coneIntake, m_brake);
@@ -81,7 +83,10 @@ public class RobotContainer {
     private final Command m_sideStartPlaceConePickUpCubeTurnLeft = SideStartPlaceConePickUpCubeTurnLeft.sideStartNeverGiveUpCommand(m_drive, m_intake, m_brake, m_tilt, m_lifter, m_coneIntake);
     private final Command m_sideStartPlaceConePickUpConeTurnRight = SideStartPlaceConePickUpConeTurnRight.sideStartNeverGiveUpCommand(m_drive, m_intake, m_brake, m_tilt, m_lifter, m_coneIntake);
     private final Command m_sideStartPlaceConePickUpCubeTurnRight = SideStartPlaceConePickUpCubeTurnRight.sideStartNeverGiveUpCommand(m_drive, m_intake, m_brake, m_tilt, m_lifter, m_coneIntake);
+    private final Command m_sideStartCubeTest = SideStartCubeTest.sideStartPlaceCubeCommand(m_drive, m_intake, m_brake, m_tilt, m_coneIntake, m_lifter);
   SendableChooser<Command> m_chooser = new SendableChooser<>();
+
+  
 
 
 
@@ -89,7 +94,7 @@ public class RobotContainer {
   }
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController = new CommandXboxController(Constants.kDriverControllerPort);
+
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -113,6 +118,7 @@ public class RobotContainer {
     m_chooser.addOption("SideStartPlaceConePickUpConeTurnLeft", m_sideStartPlaceConePickUpConeTurnLeft);
     m_chooser.addOption("SideStartPlaceConePickUpCubeTurnRight", m_sideStartPlaceConePickUpCubeTurnRight);
     m_chooser.addOption("SideStartPlaceConePickUpConeTurnRight", m_sideStartPlaceConePickUpConeTurnRight);
+    m_chooser.addOption("SideStartCubeTest", m_sideStartCubeTest);
    
     SmartDashboard.putData(m_chooser);
     CameraServer.startAutomaticCapture();
@@ -208,6 +214,9 @@ public class RobotContainer {
     m_joystick.button(12).whileTrue(HighFeederConeIntakeCommand.HighConeConfigurationCommand(m_tilt, m_lifter));
     m_joystick.button(10).whileTrue(HighConeCommand.HighConeConfigurationCommand(m_tilt, m_lifter));
 
+    m_driverController.back().whileTrue(HighCubeCommand.HighCubeConfigurationCommand(m_tilt, m_lifter));
+
+
     m_joystick.button(9).whileTrue(MediumConeCommand.MediumConeConfigurationCommand(m_tilt, m_lifter));
 
     m_joystick.button(11).whileTrue(m_lifter.elevatorPIDTeleopCommand(Constants.kElevatorDownPosition));
@@ -219,6 +228,8 @@ public class RobotContainer {
     m_driverController.rightBumper().whileTrue(FeederConeIntakeCommand.intakeConeCommand(m_tilt, m_intake, m_coneIntake, m_led));
 
     m_driverController.leftBumper().whileTrue(m_intake.runShootMotorCommand(Constants.kVeryLowShootPower, m_led));
+
+    m_joystick.button(3).whileTrue(m_drive.turnToAbsoluteAngleCommand(180));
 
   }
 

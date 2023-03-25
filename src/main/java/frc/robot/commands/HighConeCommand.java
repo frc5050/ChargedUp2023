@@ -12,7 +12,7 @@ public class HighConeCommand extends CommandBase {
     // High cone on button :)
     public static Command HighConeConfigurationCommand(Tilt tilt, Lifter lifter) {
         return Commands.parallel(tilt.tiltToDegreesCommand(Constants.kTiltConeHighPositionDegrees, false),
-                lifter.elevatorPIDAutonCommand(Constants.kElevatorHighPosition));
+                lifter.elevatorPIDAutonCommand(Constants.kElevatorHighConePosition));
 
     }
 

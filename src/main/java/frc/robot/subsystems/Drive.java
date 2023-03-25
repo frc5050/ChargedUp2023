@@ -89,7 +89,7 @@ public class Drive extends SubsystemBase {
 
     m_driveStraightPID = new ProfiledPIDController(Constants.kStraightP, 0.0, 0.0,
         new TrapezoidProfile.Constraints(1, 0.3));
-    m_turnPID = new PIDController(0.01, 0, 0.0);
+    m_turnPID = new PIDController(0.01, 0, 0.0005);
     m_turnPID.enableContinuousInput(-180, 180);
 
     m_turnPID.setTolerance(Constants.kTurnPIDPositionTolerance, Constants.kTurnPIDVelocityTolerance);
@@ -174,6 +174,7 @@ public class Drive extends SubsystemBase {
   public void arcadeDrive(double fwd, double rot, boolean squareInputs) {
     DifferentialDrive.WheelSpeeds spds = DifferentialDrive.arcadeDriveIK(fwd, rot, squareInputs);
     setMotorSpeeds(spds.left, spds.right);
+    SmartDashboard.putNumber("Velocity over Speed", m_leftEncoder.getVelocity() / spds.left);
   }
 
   public void setMotorSpeeds(double left, double right) {
@@ -256,8 +257,9 @@ public class Drive extends SubsystemBase {
                   velocity = -Math.abs(maxAbsSpeed);
                 }
               }
-              double speed = velocity / 2;
-              SmartDashboard.putNumber("Velocity over Speed", m_leftEncoder.getVelocity() / speed);
+              double speed = velocity * 1.5;
+              SmartDashboard.putNumber("Auto Real Velocity / Speed", m_leftEncoder.getVelocity() / speed);
+              SmartDashboard.putNumber("Desired Vel / Real Vel", velocity / m_leftEncoder.getVelocity());
               System.out.println("left position: " + lStartingPosition);
 
               System.out.println("desired change: " + desiredChange);
@@ -308,7 +310,8 @@ public class Drive extends SubsystemBase {
         Constants.kDriveDistanceTolerance, true);
   }
 
-  public CommandBase turnToAbsoluteAngleCommand(double angleDegrees) {
+  public CommandBase turnToAbsoluteAngleCommand(double angleDegreesRaw) {
+    final double angleDegrees = angleDegreesRaw;
     return runOnce(
         () -> {
           System.out.println("starting turn to angle command");

@@ -33,7 +33,7 @@ public class MiddleStartConeLeaveAndPark {
                                                                 tilt.tiltToDegreesCommand(
                                                                                 Constants.kTiltConeHighPositionDegrees,
                                                                                 true)),
-                                                lifter.elevatorPIDAutonCommand(Constants.kElevatorHighPosition)),
+                                                lifter.elevatorPIDAutonCommand(Constants.kElevatorHighConePosition)),
                                 coneIntake.coneOuttakeCommand(true),
 
                                 Commands.parallel(

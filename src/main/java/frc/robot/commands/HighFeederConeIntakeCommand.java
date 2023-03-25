@@ -11,7 +11,7 @@ public class HighFeederConeIntakeCommand extends CommandBase{
     
     public static Command HighConeConfigurationCommand(Tilt tilt, Lifter lifter) {
         return Commands.parallel(tilt.tiltToDegreesCommand(Constants.kTiltConeHighFeederPositionDegrees, false),
-                lifter.elevatorPIDAutonCommand(Constants.kElevatorHighPosition));
+                lifter.elevatorPIDAutonCommand(Constants.kElevatorHighConePosition));
 
     }
     

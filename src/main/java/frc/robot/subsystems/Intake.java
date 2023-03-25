@@ -87,8 +87,6 @@ public class Intake extends SubsystemBase {
   }
 
   public CommandBase shootMidCommand() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
     double power = Constants.kMidShotMotorPower;
     double timeout = Constants.kShootingTimeOut;
     return runOnce(
