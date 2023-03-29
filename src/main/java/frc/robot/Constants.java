@@ -48,7 +48,7 @@ public final class Constants {
   public static final double kDriveDistanceTolerance = 0.1;
   public static final double kBalancingAutonTimAccel = 0.7;
   public static final double kDriveTimAccel = 0.3;
-  public static final double kNavXRollOffset = -2.0;
+  public static final double kNavXRollOffset = -1.75;
   public static final double kBalanceTolerance = 5;
   public static final double kBalanceFeedForward = 0.01;
   public static final double kDistanceOverStation = -3.65;
