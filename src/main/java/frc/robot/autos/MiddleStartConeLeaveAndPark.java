@@ -46,7 +46,7 @@ public class MiddleStartConeLeaveAndPark {
                                                 Constants.kBalancingAutonTimAccel,
                                                 0.4, true),
                                 drive.driveDistanceCommand(Constants.kDistanceBackToStation, 1.0, 0.0,
-                                                Constants.kDriveTimAccel, 0.2, false),
+                                                Constants.kDriveTimAccel, 0.2, true),
                                 drive.balanceRollCommand(Constants.kNavXRollOffset)
                 // drive.controlBrakeCommand(false)
 
