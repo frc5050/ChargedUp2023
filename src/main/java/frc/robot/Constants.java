@@ -53,7 +53,7 @@ public final class Constants {
   public static final double kBalanceFeedForward = 0.01;
   public static final double kDistanceOverStation = -4.0;
   public static final double kDistanceToStation = -1.9;
-  public static final double kDistanceBackToStation = 1.5;
+  public static final double kDistanceBackToStation = 1.65;
   public static final double kTurnPIDPositionTolerance = 2.0;
   public static final double kTurnPIDVelocityTolerance = 0.3;
 
@@ -84,7 +84,7 @@ public final class Constants {
   public static final double kTiltFullyRetractedAngleDegrees = 150.0;
   public static final double kAutoReturnTiltTimeout = 0.5;
   public static final double kIntakeTimeout = 1.0;
-  public static final double kTiltHighCubePosition = 75.0 ;
+  public static final double kTiltHighCubePosition = 65.0 ;
 
   // elevator
   public static final float kElevatorTopSoftLimit = -126.6f;

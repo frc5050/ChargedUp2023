@@ -94,7 +94,7 @@ public class Drive extends SubsystemBase {
 
     m_turnPID.setTolerance(Constants.kTurnPIDPositionTolerance, Constants.kTurnPIDVelocityTolerance);
 
-    m_balancePID = new PIDController(0.003, 0, 0.0);
+    m_balancePID = new PIDController(0.0037, 0, 0.0);
     m_balancePID.setTolerance(Constants.kBalanceTolerance);
 
     m_leftEncoder.setPositionConversionFactor(Constants.kMotorRotationsToMeters);
