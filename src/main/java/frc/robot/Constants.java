@@ -48,7 +48,7 @@ public final class Constants {
   public static final double kDriveDistanceTolerance = 0.1;
   public static final double kBalancingAutonTimAccel = 0.7;
   public static final double kDriveTimAccel = 0.3;
-  public static final double kNavXRollOffset = -1.75;
+  public static final double kNavXRollOffset = -4.5;
   public static final double kBalanceTolerance = 5;
   public static final double kBalanceFeedForward = 0.01;
   public static final double kDistanceOverStation = -4.0;
@@ -84,7 +84,7 @@ public final class Constants {
   public static final double kTiltFullyRetractedAngleDegrees = 150.0;
   public static final double kAutoReturnTiltTimeout = 0.5;
   public static final double kIntakeTimeout = 1.0;
-  public static final double kTiltHighCubePosition = 65.0 ;
+  public static final double kTiltHighCubePosition = 50.0; //65
 
   // elevator
   public static final float kElevatorTopSoftLimit = -126.6f;
@@ -93,7 +93,7 @@ public final class Constants {
   public static final double kElevatorMiddlePosition = -96;
   public static final double kElevatorDownPosition = 0.0;
   public static final double kElevatorTolerance = 0.15;
-  public static final double kAutonHeightWait = 45;
+  public static final double kAutonHeightWait = 60;
   public static final double kElevatorHighCubePosition = -126.58;
 
   //LEDS

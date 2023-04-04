@@ -75,6 +75,7 @@ public class Tilt extends SubsystemBase {
   }
 
   public void setTiltMotorPower(double power) {
+    SmartDashboard.putNumber("Tilt Motor Power", power);
     m_tiltMotor.set(power);
   }
 
@@ -102,6 +103,7 @@ public class Tilt extends SubsystemBase {
           // feedForwardVoltage);
           double outputVoltage = m_tiltPID.calculate(getTiltAngleDegrees(), targetDegrees) + feedForwardVoltage;
           outputVoltage = MathUtil.clamp(outputVoltage, -3.0, 3.0);
+          SmartDashboard.putNumber("Tilt Motor Voltage", outputVoltage);
           m_tiltMotor.setVoltage(outputVoltage);
 
         });
@@ -144,7 +146,7 @@ public class Tilt extends SubsystemBase {
     // Subsystem::RunOnce implicitly requires `this` subsystem.
     return run(
         () -> {
-          SmartDashboard.putNumber("Tilt Motor Power", power.getAsDouble());
+          
           setTiltMotorPower(power.getAsDouble());
         });
   }
