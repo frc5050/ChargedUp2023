@@ -73,7 +73,7 @@ public final class Constants {
   public static final double kIntakeIRDelay = 0.2;
   public static final double kTiltConeOutPosition = 10;
   public static final double kTiltConeInPosition = 140;
-  public static final double kTiltConeHighFeederPositionDegrees = 5.0;
+  public static final double kTiltConeHighFeederPositionDegrees = 5.0; //9.0; 
   public static final double kTiltConeHighPositionDegrees = 20; //Should be 25ish
   public static final double kTiltFeederPositionDegrees = 85;
   public static final double kTiltVoltageCompensation = 10.0;
@@ -84,7 +84,7 @@ public final class Constants {
   public static final double kTiltFullyRetractedAngleDegrees = 150.0;
   public static final double kAutoReturnTiltTimeout = 0.5;
   public static final double kIntakeTimeout = 1.0;
-  public static final double kTiltHighCubePosition = 50.0; //65
+  public static final double kTiltHighCubePosition = 57.5; //50.0; //65;
 
   // elevator
   public static final float kElevatorTopSoftLimit = -126.6f;
